@@ -36,7 +36,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _game = Wordle();
-  final _keys = List.filled(Wordle.totalTries, GlobalKey<AnimatorWidgetState>(), growable: false);
+  final _keys = [
+    GlobalKey<AnimatorWidgetState>(),
+    GlobalKey<AnimatorWidgetState>(),
+    GlobalKey<AnimatorWidgetState>(),
+    GlobalKey<AnimatorWidgetState>(),
+    GlobalKey<AnimatorWidgetState>(),
+    GlobalKey<AnimatorWidgetState>(),
+  ];
 
   void _onKeyPressed(String val) {
     setState(() {
@@ -60,15 +67,23 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void _menuItemSelected(int index) {
+    switch (index) {
+      case 0:
+        setState(() {
+          _game.init();
+        });
+        _resetMessage();
+        break;
+      default:
+        break;
+    }
+  }
+
   @override
   void initState() {
     _game.init();
-
     super.initState();
-    Future.delayed(Duration.zero, () async {
-      await _game.newAnswer();
-    });
-
     _resetMessage();
   }
 
@@ -88,12 +103,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   size: 26.0,
                 ),
               )),
-          Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {},
-                child: const Icon(Icons.settings),
-              )),
+          RotatedBox(
+            quarterTurns: 1,
+            child: PopupMenuButton<int>(
+              onSelected: (item) => _menuItemSelected(item),
+              itemBuilder: (context) => [
+                const PopupMenuItem<int>(value: 0, child: Text('New Game')),
+                const PopupMenuItem<int>(value: 1, child: Text('Settings')),
+              ],
+            ),
+          ),
         ],
       ),
       backgroundColor: Colors.black,

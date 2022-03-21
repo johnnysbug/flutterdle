@@ -37,13 +37,11 @@ class Wordle {
   Wordle init() {
     _context = Context(List.filled(boardSize, Letter(0, ' ', GameColor.unset), growable: false),
         KeyboardService.init().keys, '', '', totalTries, 'Good Luck!');
-
+    Future.delayed(Duration.zero, () async {
+      await _wordService.init();
+      _context.answer = _wordService.randomWord();
+    });
     return this;
-  }
-
-  Future<void> newAnswer() async {
-    await _wordService.init();
-    _context.answer = _wordService.randomWord();
   }
 
   bool _didWin(List<Letter> attempt) => attempt.every((l) => l.color == GameColor.exact);
