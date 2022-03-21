@@ -11,7 +11,6 @@ class Wordle {
 
   late Context _context;
 
-  int _currentIndex = 0;
   final _wordService = WordService();
 
   void _updateBoard(List<Letter> attempt) {
@@ -36,7 +35,7 @@ class Wordle {
 
   Wordle init() {
     _context = Context(List.filled(boardSize, Letter(0, ' ', GameColor.unset), growable: false),
-        KeyboardService.init().keys, '', '', totalTries, 'Good Luck!');
+        KeyboardService.init().keys, '', '', totalTries, 'Good Luck!', 0);
     Future.delayed(Duration.zero, () async {
       await _wordService.init();
       _context.answer = _wordService.randomWord();
@@ -93,12 +92,12 @@ class Wordle {
         var buffer = guess.split('').map((l) => Letter(0, l, GameColor.unset));
         _updateBoard(buffer.toList());
         _context.guess = guess.replaceAll(' ', '');
-        _currentIndex -= 1;
+        _context.currentIndex -= 1;
       }
     } else {
       if (_context.guess.length < rowLength) {
         _context.guess = _context.guess + letter;
-        _context.board[_currentIndex++] = Letter(0, letter, GameColor.unset);
+        _context.board[_context.currentIndex++] = Letter(0, letter, GameColor.unset);
       }
     }
     return TurnResult.partial;
