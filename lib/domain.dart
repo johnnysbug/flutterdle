@@ -5,6 +5,12 @@ enum GameColor {
   exact,
 }
 
+enum TurnResult {
+  successful,
+  unsuccessful,
+  partial
+}
+
 class Letter {
   int index;
   String value;

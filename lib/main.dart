@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_animator/flutter_animator.dart';
+import 'package:flutter_wordle/domain.dart';
 import 'package:flutter_wordle/game.dart';
 import 'package:flutter_wordle/widgets/board.dart';
 import 'package:flutter_wordle/widgets/keyboard.dart';
@@ -32,16 +36,28 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _game = Wordle();
+  final _keys = List.filled(Wordle.totalTries, GlobalKey<AnimatorWidgetState>(), growable: false);
 
   void _onKeyPressed(String val) {
     setState(() {
-      _game.takeTurn(val);
+      var result = _game.takeTurn(val);
+      if (result == TurnResult.unsuccessful) {
+        var index = (_game.context.remainingTries - Wordle.totalTries).abs();
+        _keys[index].currentState?.forward();
+      }
     });
-    Future.delayed(const Duration(seconds: 2), () {
-      setState(() {
-        _game.context.message = '';
-      });
-    });
+    _resetMessage();
+  }
+
+  void _resetMessage() {
+    if (_game.context.message.isNotEmpty) {
+      var duration = const Duration(seconds: 2);
+      Timer(duration, (() {
+        setState(() {
+          _game.context.message = '';
+        });
+      }));
+    }
   }
 
   @override
@@ -53,11 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       await _game.newAnswer();
     });
 
-    Future.delayed(const Duration(seconds: 2), () async {
-      setState(() {
-        _game.context.message = '';
-      });
-    });
+    _resetMessage();
   }
 
   @override
@@ -65,6 +77,24 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        centerTitle: true,
+        actions: <Widget>[
+          Padding(
+              padding: const EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {},
+                child: const Icon(
+                  Icons.leaderboard,
+                  size: 26.0,
+                ),
+              )),
+          Padding(
+              padding: const EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {},
+                child: const Icon(Icons.settings),
+              )),
+        ],
       ),
       backgroundColor: Colors.black,
       body: SizedBox.expand(
@@ -78,13 +108,8 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Stack(
                 children: [
                   Positioned(
-                    top: 25,
-                    left: 75,
-                    child: Board(_game.context, Wordle.rowLength)),
-                  Positioned(
-                    top: 470,
-                    left: 0,
-                    child: Keyboard(_game.context.keys, _onKeyPressed)),
+                      top: 25, left: 75, child: Board(_game.context, Wordle.rowLength, _keys)),
+                  Positioned(top: 470, left: 0, child: Keyboard(_game.context.keys, _onKeyPressed)),
                 ],
               ),
             ),

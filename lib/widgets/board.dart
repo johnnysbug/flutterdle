@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_wordle/domain.dart';
 
 class Board extends StatelessWidget {
+  final List<GlobalKey<AnimatorWidgetState>> _keys;
+
   final Context _context;
   final int _rowLength;
 
-  const Board(this._context, this._rowLength, {Key? key}) : super(key: key);
+  const Board(this._context, this._rowLength, this._keys, {Key? key}) : super(key: key);
 
   List<Widget> _buildTiles() {
-    final rows = <Flex>[];
+    final rows = <Widget>[];
     var board = _context.board;
 
     var i = 0;
@@ -18,10 +21,15 @@ class Board extends StatelessWidget {
         cells.add(_buildCell(board[i].value, board[i].color));
         i++;
       }
-      rows.add(Flex(
-        children: cells,
-        direction: Axis.horizontal,
-      ));
+      rows.add(Shake(
+          key: _keys[x],
+          preferences: const AnimationPreferences(
+            magnitude: 0.4, 
+            autoPlay: AnimationPlayStates.None),
+          child: Flex(
+            children: cells,
+            direction: Axis.horizontal,
+          )));
     }
     return rows;
   }

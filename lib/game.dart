@@ -65,10 +65,11 @@ class Wordle {
     }
   }
 
-  void takeTurn(String letter) {
+  TurnResult takeTurn(String letter) {
     if (KeyboardService.isEnter(letter)) {
       if (!_wordService.isLongEnough(_context.guess)) {
         _context.message = 'Not enough letters';
+        return TurnResult.unsuccessful;
       } else if (_wordService.isValidGuess(_context.guess)) {
         var attempt =
             MatchingService.matches(_context.guess.toLowerCase(), _context.answer).toList();
@@ -83,8 +84,10 @@ class Wordle {
             : remaining == 0
                 ? 'Sorry, you lost'
                 : '';
+        return TurnResult.successful;
       } else {
         _context.message = 'Not in Word list';
+        return TurnResult.unsuccessful;
       }
     } else if (KeyboardService.isBackspace(letter)) {
       if (_context.guess.isNotEmpty) {
@@ -100,6 +103,7 @@ class Wordle {
         _context.board[_currentIndex++] = Letter(0, letter, GameColor.unset);
       }
     }
+    return TurnResult.partial;
   }
 
   Context get context => _context;
