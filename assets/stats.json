@@ -1,0 +1,14 @@
+{
+    "played": 0,
+    "won": 0.0,
+    "current-streak": 0,
+    "max-streak": 0,
+    "guess-distribution": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ]
+}

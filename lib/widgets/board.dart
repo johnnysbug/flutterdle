@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_wordle/domain.dart';
+import 'package:flutter_wordle/widgets/tile.dart';
 
 class Board extends StatelessWidget {
   final List<GlobalKey<AnimatorWidgetState>> _keys;
@@ -18,13 +19,14 @@ class Board extends StatelessWidget {
     for (var x = 0; x < board.length / _rowLength; x++) {
       final cells = <Widget>[];
       for (var y = 0; y < _rowLength; y++) {
-        cells.add(_buildCell(board[i].value, board[i].color));
+        cells.add(Tile(board[i].value, board[i].color));
         i++;
       }
       rows.add(Shake(
           key: _keys[x],
           preferences: const AnimationPreferences(
-            magnitude: 0.4, 
+            magnitude: 0.7, 
+            duration: Duration(milliseconds: 700),
             autoPlay: AnimationPlayStates.None),
           child: Flex(
             children: cells,
@@ -32,46 +34,6 @@ class Board extends StatelessWidget {
           )));
     }
     return rows;
-  }
-
-  Color _toColor(GameColor color) {
-    switch (color) {
-      case GameColor.exact:
-        return Colors.green;
-      case GameColor.partial:
-        return const Color.fromARGB(255, 207, 187, 98);
-      case GameColor.none:
-        return const Color.fromARGB(255, 90, 87, 87);
-      case GameColor.unset:
-        return Colors.black;
-    }
-  }
-
-  Widget _buildCell(String letter, GameColor color) {
-    return Flexible(
-      child: Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: Container(
-            decoration: BoxDecoration(
-                border: Border.all(
-                  width: 2,
-                  color: Colors.grey.shade800,
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                color: _toColor(color)),
-            child: FittedBox(
-                fit: BoxFit.contain,
-                child: Text(
-                  letter,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                )),
-          ),
-        ),
-      ),
-    );
   }
 
   @override

@@ -6,6 +6,7 @@ import 'package:flutter_wordle/domain.dart';
 import 'package:flutter_wordle/game.dart';
 import 'package:flutter_wordle/widgets/board.dart';
 import 'package:flutter_wordle/widgets/keyboard.dart';
+import 'package:flutter_wordle/widgets/stats.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,6 +45,14 @@ class _MyHomePageState extends State<MyHomePage> {
     GlobalKey<AnimatorWidgetState>(),
     GlobalKey<AnimatorWidgetState>(),
   ];
+
+  bool _showStats = false;
+
+  void _close() {
+    setState(() {
+      _showStats = false;
+    });
+  }
 
   void _onKeyPressed(String val) {
     setState(() {
@@ -97,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Padding(
               padding: const EdgeInsets.only(right: 20.0),
               child: GestureDetector(
-                onTap: () {},
+                onTap: () => _openStats(),
                 child: const Icon(
                   Icons.leaderboard,
                   size: 26.0,
@@ -116,25 +125,35 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       backgroundColor: Colors.black,
-      body: SizedBox.expand(
-        child: Container(
-          color: Colors.black,
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: SizedBox(
-              width: 500,
-              height: 670,
-              child: Stack(
-                children: [
-                  Positioned(
-                      top: 25, left: 75, child: Board(_game.context, Wordle.rowLength, _keys)),
-                  Positioned(top: 470, left: 0, child: Keyboard(_game.context.keys, _onKeyPressed)),
-                ],
+      body: Stack(children: [
+        SizedBox.expand(
+          child: Container(
+            color: Colors.black,
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: SizedBox(
+                width: 500,
+                height: 670,
+                child: Stack(
+                  children: [
+                    Positioned(
+                        top: 25, left: 75, child: Board(_game.context, Wordle.rowLength, _keys)),
+                    Positioned(
+                        top: 470, left: 0, child: Keyboard(_game.context.keys, _onKeyPressed)),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
+        if (_showStats) ...[Stats(_close)]
+      ]),
     );
+  }
+
+  _openStats() {
+    setState(() {
+      _showStats = true;
+    });
   }
 }
