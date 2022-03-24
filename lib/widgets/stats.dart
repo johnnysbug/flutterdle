@@ -1,10 +1,13 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_wordle/domain.dart' as stats;
 import 'package:share_plus/share_plus.dart';
 
 class Stats extends StatelessWidget {
-  const Stats(this._close, {Key? key}) : super(key: key);
+  const Stats(this._stats, this._close, {Key? key}) : super(key: key);
 
   final Function _close;
+  final stats.Stats _stats;
 
   int _getFlex(int number, int total) => (number / (number + (total - number)) * 10).ceil();
 
@@ -32,11 +35,8 @@ class Stats extends StatelessWidget {
                               const Spacer(),
                               TextButton(
                                   onPressed: () => _close(),
-                                  child: const Text(
-                                    "X", 
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20)))
+                                  child: const Text("X",
+                                      style: TextStyle(color: Colors.white, fontSize: 20)))
                             ],
                           ),
                           const Center(
@@ -55,15 +55,15 @@ class Stats extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 4, right: 4),
                                   child: Column(
-                                    children: const [
+                                    children: [
                                       Text(
-                                        "56",
-                                        style: TextStyle(
+                                        _stats.played.toString(),
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 36,
                                         ),
                                       ),
-                                      Text(
+                                      const Text(
                                         "Played",
                                         style: TextStyle(
                                           color: Colors.white,
@@ -76,15 +76,15 @@ class Stats extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 4, right: 4),
                                   child: Column(
-                                    children: const [
+                                    children: [
                                       Text(
-                                        "100",
-                                        style: TextStyle(
+                                        _stats.percentWon.toString(),
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 36,
                                         ),
                                       ),
-                                      Text(
+                                      const Text(
                                         "Win %",
                                         style: TextStyle(
                                           color: Colors.white,
@@ -97,15 +97,15 @@ class Stats extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 4, right: 4),
                                   child: Column(
-                                    children: const [
+                                    children: [
                                       Text(
-                                        "45",
-                                        style: TextStyle(
+                                        _stats.streak.current.toString(),
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 36,
                                         ),
                                       ),
-                                      Text(
+                                      const Text(
                                         "Current Streak",
                                         softWrap: true,
                                         style: TextStyle(
@@ -119,15 +119,15 @@ class Stats extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 4, right: 4),
                                   child: Column(
-                                    children: const [
+                                    children: [
                                       Text(
-                                        "45",
-                                        style: TextStyle(
+                                        _stats.streak.max.toString(),
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 36,
                                         ),
                                       ),
-                                      Text(
+                                      const Text(
                                         "Max Streak",
                                         softWrap: true,
                                         style: TextStyle(
@@ -154,16 +154,7 @@ class Stats extends StatelessWidget {
                           ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                            child: Column(
-                              children: [
-                                _statRow(1, 1, 20),
-                                _statRow(2, 0, 20),
-                                _statRow(3, 11, 20),
-                                _statRow(4, 20, 20),
-                                _statRow(5, 19, 20),
-                                _statRow(6, 6, 20, isCurrent: true),
-                              ],
-                            ),
+                            child: _guessDistribution(),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(20.0),
@@ -173,8 +164,8 @@ class Stats extends StatelessWidget {
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(primary: Colors.green),
                                   onPressed: () {
-                                    Share.share('Flutter Wordle 5/6\n\nTODO GET BLOCKS',
-                                        subject: 'Flutter Wordle 5/6');
+                                    Share.share('Flutter Wordle ${_stats.lastGuess}/6\n${_stats.lastBoard}',
+                                        subject: 'Flutter Wordle ${_stats.lastGuess}/6');
                                   },
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
@@ -203,6 +194,24 @@ class Stats extends StatelessWidget {
                     ))
               ]))),
     );
+  }
+
+  Widget _guessDistribution() {
+    if (_stats.played == 0) {
+      return const Center(
+          child: Text(
+        "No Data",
+        style: TextStyle(color: Colors.white, fontSize: 20),
+      ));
+    }
+
+    var maxGuess = _stats.guessDistribution.reduce(max);
+    var children = <Widget>[];
+
+    for (var i = 0; i < _stats.guessDistribution.length; i++) {
+      children.add(_statRow(i + 1, _stats.guessDistribution[i], maxGuess, isCurrent: (i + 1) == _stats.lastGuess));
+    }
+    return Column(children: children);
   }
 
   Padding _statRow(int rowNumber, int completed, int total, {bool isCurrent = false}) {

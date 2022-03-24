@@ -6,7 +6,7 @@ import 'package:flutter_wordle/domain.dart';
 import 'package:flutter_wordle/game.dart';
 import 'package:flutter_wordle/widgets/board.dart';
 import 'package:flutter_wordle/widgets/keyboard.dart';
-import 'package:flutter_wordle/widgets/stats.dart';
+import 'package:flutter_wordle/widgets/stats.dart' as stat;
 
 void main() {
   runApp(const MyApp());
@@ -55,6 +55,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onKeyPressed(String val) {
+    if (_game.context.remainingTries == 0) {
+      return;
+    }
     setState(() {
       var result = _game.takeTurn(val);
       if (result == TurnResult.unsuccessful) {
@@ -72,6 +75,13 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           _game.context.message = '';
         });
+        if (_game.context.remainingTries == 0) {
+          Timer(const Duration(milliseconds: 500), (() {
+            setState(() {
+              _showStats = true;
+            });
+          }));
+        }
       }));
     }
   }
@@ -146,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
-        if (_showStats) ...[Stats(_close)]
+        if (_showStats) ...[stat.Stats(_game.context.stats, _close)]
       ]),
     );
   }

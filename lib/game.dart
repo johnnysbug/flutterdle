@@ -1,6 +1,7 @@
 import 'package:flutter_wordle/domain.dart';
 import 'package:flutter_wordle/services/keyboard_service.dart';
 import 'package:flutter_wordle/services/matching_service.dart';
+import 'package:flutter_wordle/services/stats_service.dart';
 import 'package:flutter_wordle/services/word_service.dart';
 
 class Wordle {
@@ -37,6 +38,8 @@ class Wordle {
     _context = Context(List.filled(boardSize, Letter(0, ' ', GameColor.unset), growable: false),
         KeyboardService.init().keys, '', '', totalTries, 'Good Luck!', 0);
     Future.delayed(Duration.zero, () async {
+      var stats = await StatsService().loadStats();
+      _context.stats = stats;
       await _wordService.init();
       _context.answer = _wordService.randomWord();
     });
@@ -62,6 +65,49 @@ class Wordle {
     }
   }
 
+  String _getTileBlock(GameColor color) {
+    switch (color) {
+      case GameColor.unset:
+      case GameColor.none:
+        return '⬛️';
+      case GameColor.partial:
+        return '🟨';
+      case GameColor.exact:
+        return '🟩';
+    }
+  }
+
+  String _getShareableBoard(int index) {
+    String board = '';
+    int endingIndex = ((totalTries - _context.remainingTries) * rowLength) + rowLength;
+    for (int i = 0; i < endingIndex; i++) {
+      if (i > 0 && i % rowLength == 0) {
+        board += '\n';
+      }
+      board += _getTileBlock(_context.board[i].color);
+    }
+    return board;
+  }
+
+  void _updateStats(bool won) {
+    if (won) {
+      var index = (_context.remainingTries - totalTries).abs();
+      _context.stats.guessDistribution[index] += 1;
+      _context.stats.lastGuess = index + 1;
+      _context.stats.won += 1;
+      _context.stats.streak.current += 1;
+      if (_context.stats.streak.current > _context.stats.streak.max) {
+        _context.stats.streak.max = _context.stats.streak.current;
+      }
+      _context.stats.lastBoard = _getShareableBoard(index);
+    } else {
+      _context.stats.streak.current = 0;
+    }
+    Future.delayed(Duration.zero, () async {
+      await StatsService().saveStats(_context.stats);
+    });
+  }
+
   TurnResult takeTurn(String letter) {
     if (KeyboardService.isEnter(letter)) {
       if (!_wordService.isLongEnough(_context.guess)) {
@@ -73,6 +119,9 @@ class Wordle {
         _updateBoard(attempt);
         _context.keys = _updateKeys(_context.keys, attempt);
         var won = _didWin(attempt);
+        if (won || _context.remainingTries == 1) {
+          _updateStats(won);
+        }
         var remaining = _context.remainingTries - 1;
         _context.guess = '';
         _context.remainingTries = won ? 0 : remaining;

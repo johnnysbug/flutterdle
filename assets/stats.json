@@ -1,14 +1,11 @@
 {
-    "played": 0,
-    "won": 0.0,
-    "current-streak": 0,
-    "max-streak": 0,
-    "guess-distribution": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-    ]
+    "won": 0,
+    "lost": 0,
+    "streak": {
+        "current": 0,
+        "max": 0
+    },
+    "guessDistribution": [ 0, 0, 0, 0, 0, 0 ],
+    "lastGuess": 0,
+    "lastBoard": ""
 }

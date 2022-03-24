@@ -19,6 +19,7 @@ class Tile extends StatelessWidget {
         return Colors.black;
     }
   }
+  
   @override
   Widget build(BuildContext context) {
     return Flexible(
