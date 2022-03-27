@@ -5,12 +5,13 @@ import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_wordle/domain.dart';
 
 class Board extends StatelessWidget {
-  final List<GlobalKey<AnimatorWidgetState>> _keys;
+  final List<GlobalKey<AnimatorWidgetState>> _shakeKeys;
+  final List<GlobalKey<AnimatorWidgetState>> _bounceKeys;
 
   final Context _context;
   final int _rowLength;
 
-  const Board(this._context, this._rowLength, this._keys, {Key? key}) : super(key: key);
+  const Board(this._context, this._rowLength, this._shakeKeys, this._bounceKeys, {Key? key}) : super(key: key);
 
   List<Widget> _buildRows() {
     final rows = <Widget>[];
@@ -20,11 +21,16 @@ class Board extends StatelessWidget {
     for (var x = 0; x < board.length / _rowLength; x++) {
       final cells = <Widget>[];
       for (var y = 0; y < _rowLength; y++) {
-        cells.add(Flexible(child: _buildFlipAnimation(board[i])));
+        cells.add(Flexible(
+          child: Bounce(
+            key: _bounceKeys[i],
+            child: _buildFlipAnimation(board[i]),
+          ),
+        ));
         i++;
       }
       rows.add(Shake(
-          key: _keys[x],
+          key: _shakeKeys[x],
           preferences: const AnimationPreferences(
               magnitude: 0.7,
               duration: Duration(milliseconds: 700),

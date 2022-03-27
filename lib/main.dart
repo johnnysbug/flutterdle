@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_wordle/domain.dart';
 import 'package:flutter_wordle/game.dart';
 import 'package:flutter_wordle/widgets/board.dart';
@@ -37,14 +36,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _game = Wordle();
-  final _keys = [
-    GlobalKey<AnimatorWidgetState>(),
-    GlobalKey<AnimatorWidgetState>(),
-    GlobalKey<AnimatorWidgetState>(),
-    GlobalKey<AnimatorWidgetState>(),
-    GlobalKey<AnimatorWidgetState>(),
-    GlobalKey<AnimatorWidgetState>(),
-  ];
 
   bool _showStats = false;
 
@@ -62,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _game.evaluateTurn(val);
       if (_game.context.turnResult == TurnResult.unsuccessful) {
         var index = (_game.context.remainingTries - Wordle.totalTries).abs();
-        _keys[index].currentState?.forward();
+        _game.shakeKeys[index].currentState?.forward();
       } else if (_game.context.turnResult == TurnResult.successful) {
         for (var i = 0; i < _game.context.attempt.length; i++) {
           var offset = i + ((Wordle.totalTries - _game.context.remainingTries) * Wordle.rowLength);
@@ -72,7 +63,22 @@ class _MyHomePageState extends State<MyHomePage> {
             });
           });
         }
-        Timer(const Duration(seconds: 2), () {
+        var didWin = _game.didWin(_game.context.attempt);
+        var delay = didWin ? 4 : 2;
+        if (didWin) {
+          Timer(const Duration(seconds: 2), () {
+            for (var i = 0; i < _game.context.attempt.length; i++) {
+              var offset =
+                  i + ((Wordle.totalTries - _game.context.remainingTries) * Wordle.rowLength);
+              Timer(Duration(milliseconds: (i * 200)), () {
+                setState(() {
+                  _game.bounceKeys[offset].currentState?.forward();
+                });
+              });
+            }
+          });
+        }
+        Timer(Duration(seconds: delay), () {
           setState(() {
             _game.updateAfterSuccessfulGuess();
             _resetMessage();
@@ -162,7 +168,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Stack(
                   children: [
                     Positioned(
-                        top: 25, left: 75, child: Board(_game.context, Wordle.rowLength, _keys)),
+                        top: 25,
+                        left: 75,
+                        child: Board(
+                            _game.context, Wordle.rowLength, _game.shakeKeys, _game.bounceKeys)),
                     Positioned(
                         top: 470, left: 0, child: Keyboard(_game.context.keys, _onKeyPressed)),
                     if (_showStats) ...[stat.Stats(_game.context.stats, _close)]

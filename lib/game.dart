@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_wordle/domain.dart';
 import 'package:flutter_wordle/services/keyboard_service.dart';
 import 'package:flutter_wordle/services/matching_service.dart';
@@ -11,6 +13,8 @@ class Wordle {
   static const cellMargin = 8;
 
   late Context _context;
+  late List<GlobalKey<AnimatorWidgetState>> _shakeKeys = [];
+  late List<GlobalKey<AnimatorWidgetState>> _bounceKeys = [];
 
   final _wordService = WordService();
 
@@ -35,6 +39,13 @@ class Wordle {
   }
 
   Wordle init() {
+    for (var i = 0; i < totalTries; i++) {
+      _shakeKeys.add(GlobalKey<AnimatorWidgetState>());
+    }
+    for (var i = 0; i < boardSize; i++) {
+      _bounceKeys.add(GlobalKey<AnimatorWidgetState>());
+    }
+
     _context = Context(List.filled(boardSize, Letter(0, '', GameColor.unset), growable: false),
         KeyboardService.init().keys, '', '', [], TurnResult.unset, totalTries, 'Good Luck!', 0);
     Future.delayed(Duration.zero, () async {
@@ -46,7 +57,7 @@ class Wordle {
     return this;
   }
 
-  bool _didWin(List<Letter> attempt) => attempt.every((l) => l.color == GameColor.exact);
+  bool didWin(List<Letter> attempt) => attempt.every((l) => l.color == GameColor.exact);
 
   String _winningMessage(int remainingTries) {
     switch (remainingTries) {
@@ -139,10 +150,12 @@ class Wordle {
   }
 
   Context get context => _context;
+  List<GlobalKey<AnimatorWidgetState>> get shakeKeys => _shakeKeys;
+  List<GlobalKey<AnimatorWidgetState>> get bounceKeys => _bounceKeys;
 
   void updateAfterSuccessfulGuess() {
     _context.keys = _updateKeys(_context.keys, _context.attempt);
-    var won = _didWin(_context.attempt);
+    var won = didWin(_context.attempt);
     if (won || _context.remainingTries == 1) {
       _updateStats(won);
     }
