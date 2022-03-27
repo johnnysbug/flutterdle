@@ -18,12 +18,12 @@ class Stats extends StatelessWidget {
       child: FittedBox(
           fit: BoxFit.contain,
           child: SizedBox(
-              width: 420,
+              width: 500,
               height: 670,
               child: Stack(children: [
                 Positioned(
                     top: 75,
-                    left: 25,
+                    left: 65,
                     child: SizedBox(
                       width: 370,
                       height: 500,

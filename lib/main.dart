@@ -59,10 +59,25 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
     setState(() {
-      var result = _game.takeTurn(val);
-      if (result == TurnResult.unsuccessful) {
+      _game.evaluateTurn(val);
+      if (_game.context.turnResult == TurnResult.unsuccessful) {
         var index = (_game.context.remainingTries - Wordle.totalTries).abs();
         _keys[index].currentState?.forward();
+      } else if (_game.context.turnResult == TurnResult.successful) {
+        for (var i = 0; i < _game.context.attempt.length; i++) {
+          var offset = i + ((Wordle.totalTries - _game.context.remainingTries) * Wordle.rowLength);
+          Timer(Duration(milliseconds: (i * 200)), () {
+            setState(() {
+              _game.context.board[offset] = _game.context.attempt[i];
+            });
+          });
+        }
+        Timer(const Duration(seconds: 2), () {
+          setState(() {
+            _game.updateAfterSuccessfulGuess();
+            _resetMessage();
+          });
+        });
       }
     });
     _resetMessage();
@@ -150,13 +165,13 @@ class _MyHomePageState extends State<MyHomePage> {
                         top: 25, left: 75, child: Board(_game.context, Wordle.rowLength, _keys)),
                     Positioned(
                         top: 470, left: 0, child: Keyboard(_game.context.keys, _onKeyPressed)),
+                    if (_showStats) ...[stat.Stats(_game.context.stats, _close)]
                   ],
                 ),
               ),
             ),
           ),
         ),
-        if (_showStats) ...[stat.Stats(_game.context.stats, _close)]
       ]),
     );
   }

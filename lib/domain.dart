@@ -5,7 +5,7 @@ enum GameColor {
   exact,
 }
 
-enum TurnResult { successful, unsuccessful, partial }
+enum TurnResult { unset, successful, unsuccessful, partial }
 
 class Letter {
   int index;
@@ -20,13 +20,15 @@ class Context {
   List<List<Letter>> keys;
   String answer;
   String guess;
+  List<Letter> attempt;
+  TurnResult turnResult;
   int remainingTries;
   String message;
   int currentIndex;
   late Stats stats;
 
-  Context(this.board, this.keys, this.answer, this.guess, this.remainingTries, this.message,
-      this.currentIndex);
+  Context(this.board, this.keys, this.answer, this.guess, this.attempt, this.turnResult, this.remainingTries,
+      this.message, this.currentIndex);
 }
 
 class Stats {

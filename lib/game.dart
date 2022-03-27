@@ -14,7 +14,7 @@ class Wordle {
 
   final _wordService = WordService();
 
-  void _updateBoard(List<Letter> attempt) {
+  void updateBoard(List<Letter> attempt) {
     for (var i = 0; i < attempt.length; i++) {
       var offset = i + ((totalTries - _context.remainingTries) * rowLength);
       _context.board[offset] = attempt[i];
@@ -35,8 +35,8 @@ class Wordle {
   }
 
   Wordle init() {
-    _context = Context(List.filled(boardSize, Letter(0, ' ', GameColor.unset), growable: false),
-        KeyboardService.init().keys, '', '', totalTries, 'Good Luck!', 0);
+    _context = Context(List.filled(boardSize, Letter(0, '', GameColor.unset), growable: false),
+        KeyboardService.init().keys, '', '', [], TurnResult.unset, totalTries, 'Good Luck!', 0);
     Future.delayed(Duration.zero, () async {
       var stats = await StatsService().loadStats();
       _context.stats = stats;
@@ -108,38 +108,25 @@ class Wordle {
     });
   }
 
-  TurnResult takeTurn(String letter) {
+  void evaluateTurn(String letter) {
+    _context.turnResult = TurnResult.partial;
     if (KeyboardService.isEnter(letter)) {
       if (!_wordService.isLongEnough(_context.guess)) {
         _context.message = 'Not enough letters';
-        return TurnResult.unsuccessful;
+        _context.turnResult = TurnResult.unsuccessful;
       } else if (_wordService.isValidGuess(_context.guess)) {
-        var attempt =
+        _context.attempt =
             MatchingService.matches(_context.guess.toLowerCase(), _context.answer).toList();
-        _updateBoard(attempt);
-        _context.keys = _updateKeys(_context.keys, attempt);
-        var won = _didWin(attempt);
-        if (won || _context.remainingTries == 1) {
-          _updateStats(won);
-        }
-        var remaining = _context.remainingTries - 1;
-        _context.guess = '';
-        _context.remainingTries = won ? 0 : remaining;
-        _context.message = won
-            ? _winningMessage(remaining)
-            : remaining == 0
-                ? 'Sorry, you lost'
-                : '';
-        return TurnResult.successful;
+        _context.turnResult = TurnResult.successful;
       } else {
         _context.message = 'Not in Word list';
-        return TurnResult.unsuccessful;
+        _context.turnResult = TurnResult.unsuccessful;
       }
     } else if (KeyboardService.isBackspace(letter)) {
       if (_context.guess.isNotEmpty) {
         var guess = _context.guess.substring(0, _context.guess.length - 1).padRight(rowLength);
         var buffer = guess.split('').map((l) => Letter(0, l, GameColor.unset));
-        _updateBoard(buffer.toList());
+        updateBoard(buffer.toList());
         _context.guess = guess.replaceAll(' ', '');
         _context.currentIndex -= 1;
       }
@@ -149,8 +136,24 @@ class Wordle {
         _context.board[_context.currentIndex++] = Letter(0, letter, GameColor.unset);
       }
     }
-    return TurnResult.partial;
   }
 
   Context get context => _context;
+
+  void updateAfterSuccessfulGuess() {
+    _context.keys = _updateKeys(_context.keys, _context.attempt);
+    var won = _didWin(_context.attempt);
+    if (won || _context.remainingTries == 1) {
+      _updateStats(won);
+    }
+    var remaining = _context.remainingTries - 1;
+    _context.guess = '';
+    _context.attempt = [];
+    _context.remainingTries = won ? 0 : remaining;
+    _context.message = won
+        ? _winningMessage(remaining)
+        : remaining == 0
+            ? 'Sorry, you lost'
+            : '';
+  }
 }
