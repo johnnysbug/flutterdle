@@ -1,12 +1,30 @@
-# flutter_wordle
+# Flutter Wordle clone
 
-A new Flutter project.
+I wanted to challenge myself after writing a [version of Wordle using F#](https://github.com/johnnysbug/fsharp-command-line-wordle), so I decided to try Flutter. This was a fun project, since Flutter allows for rapid feedback cycles during UI development.
 
-## Getting Started
+You should be able to clone this repo and run it yourself, given you have setup your Flutter development environment. Here's a link to Flutter's [online documentation](https://flutter.dev/docs) for getting started.
 
-This project is a starting point for a Flutter application.
+I tried to implement the majority of features seen in the actual [Wordle](https://www.nytimes.com/games/wordle/index.html) game. Here's a list of features:
 
-A few resources to get you started if this is your first Flutter project:
+- displays shake animation when a word doesn't exist in the word list or is shorter than five characters
+- flips the letter tiles in a staggered manner when a guess is accepted
+- gives feeback phrases when winning the game
+- updates keyboard to show used letters with appropriate colors
+- tracks game stats and persists them to the device (tested on iOS and Android, but may work in Chrome as well)
+- generates a random word to guess for every new game (this is different than the official Wordle which generates a random word once a day)
+
+### TODO:
+- animate winning word tiles
+- implement hard mode
+- implement dark/light theme settings
+- implement rules screen
+- implement logic to generate a new word once a day that matches official game
+
+![Simulator Screen Recording - iPhone SE (3rd generation) - 2022-03-26 at 23 44 35](https://user-images.githubusercontent.com/1800439/160267131-11238e51-d079-4e7f-9f86-fdeddca1cfcd.gif)
+
+---
+
+Here's few resources to get you started if this is your first time using Flutter:
 
 - [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
