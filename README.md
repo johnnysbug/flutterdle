@@ -14,7 +14,7 @@ I tried to implement the majority of features seen in the actual [Wordle](https:
 - generates a random word to guess for every new game (this is different than the official Wordle which generates a random word once a day)
 
 ### TODO:
-- animate winning word tiles
+- ~~animate winning word tiles~~
 - implement hard mode
 - implement dark/light theme settings
 - implement rules screen
