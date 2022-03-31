@@ -17,11 +17,13 @@ I tried to implement the majority of features seen in the actual [Wordle](https:
 - ~~animate winning word tiles~~
 - implement hard mode
 - implement dark/light theme settings
-- implement rules screen
+- ~~implement rules screen~~
 - implement logic to generate a new word once a day that matches official game
 
-![Simulator Screen Recording - iPhone SE (3rd generation) - 2022-03-26 at 23 44 35](https://user-images.githubusercontent.com/1800439/160267131-11238e51-d079-4e7f-9f86-fdeddca1cfcd.gif)
-
+<p align="center">
+<img src="https://user-images.githubusercontent.com/1800439/160267131-11238e51-d079-4e7f-9f86-fdeddca1cfcd.gif" width="40%" />
+<img src="https://user-images.githubusercontent.com/1800439/160973073-e59ee475-58b8-419d-a1be-e9283e269adc.png" width="40%" />
+</p>
 ---
 
 Here's few resources to get you started if this is your first time using Flutter:
