@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_wordle/domain.dart';
 import 'package:flutter_wordle/game.dart';
 import 'package:flutter_wordle/widgets/board.dart';
+import 'package:flutter_wordle/widgets/how_to.dart';
 import 'package:flutter_wordle/widgets/keyboard.dart';
 import 'package:flutter_wordle/widgets/stats.dart' as stat;
 
@@ -38,10 +39,17 @@ class _MyHomePageState extends State<MyHomePage> {
   final _game = Wordle();
 
   bool _showStats = false;
+  bool _showHelp = false;
 
-  void _close() {
+  void _closeStats() {
     setState(() {
       _showStats = false;
+    });
+  }
+
+  void _closeHelp() {
+    setState(() {
+      _showHelp = false;
     });
   }
 
@@ -129,60 +137,78 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
-        actions: <Widget>[
-          Padding(
+    return Stack(children: [
+      Scaffold(
+        appBar: AppBar(
+          leading: Padding(
               padding: const EdgeInsets.only(right: 20.0),
               child: GestureDetector(
-                onTap: () => _openStats(),
+                onTap: () => _openHelp(),
                 child: const Icon(
-                  Icons.leaderboard,
+                  Icons.help_outline,
                   size: 26.0,
                 ),
               )),
-          RotatedBox(
-            quarterTurns: 1,
-            child: PopupMenuButton<int>(
-              onSelected: (item) => _menuItemSelected(item),
-              itemBuilder: (context) => [
-                const PopupMenuItem<int>(value: 0, child: Text('New Game')),
-                const PopupMenuItem<int>(value: 1, child: Text('Settings')),
-              ],
+          title: Text(widget.title),
+          centerTitle: true,
+          actions: <Widget>[
+            Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () => _openStats(),
+                  child: const Icon(
+                    Icons.leaderboard,
+                    size: 26.0,
+                  ),
+                )),
+            RotatedBox(
+              quarterTurns: 1,
+              child: PopupMenuButton<int>(
+                onSelected: (item) => _menuItemSelected(item),
+                itemBuilder: (context) => [
+                  const PopupMenuItem<int>(value: 0, child: Text('New Game')),
+                  const PopupMenuItem<int>(value: 1, child: Text('Settings')),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-      backgroundColor: Colors.black,
-      body: Stack(children: [
-        SizedBox.expand(
-          child: Container(
-            color: Colors.black,
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: SizedBox(
-                width: 500,
-                height: 670,
-                child: Stack(
-                  children: [
-                    Positioned(
-                        top: 25,
-                        left: 75,
-                        child: Board(
-                            _game.context, Wordle.rowLength, _game.shakeKeys, _game.bounceKeys)),
-                    Positioned(
-                        top: 470, left: 0, child: Keyboard(_game.context.keys, _onKeyPressed)),
-                    if (_showStats) ...[stat.Stats(_game.context.stats, _close)]
-                  ],
+          ],
+        ),
+        backgroundColor: Colors.black,
+        body: Stack(children: [
+          SizedBox.expand(
+            child: Container(
+              color: Colors.black,
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: SizedBox(
+                  width: 500,
+                  height: 670,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                          top: 25,
+                          left: 75,
+                          child: Board(
+                              _game.context, Wordle.rowLength, _game.shakeKeys, _game.bounceKeys)),
+                      Positioned(
+                          top: 470, left: 0, child: Keyboard(_game.context.keys, _onKeyPressed)),
+                      if (_showStats) ...[stat.Stats(_game.context.stats, _closeStats)]
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ]),
-    );
+        ]),
+      ),
+      if (_showHelp) ...[HowTo(_closeHelp)]
+    ]);
+  }
+
+  _openHelp() {
+    setState(() {
+      _showHelp = true;
+    });
   }
 
   _openStats() {
