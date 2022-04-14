@@ -11,18 +11,21 @@ I tried to implement the majority of features seen in the actual [Wordle](https:
 - gives feeback phrases when winning the game
 - updates keyboard to show used letters with appropriate colors
 - tracks game stats and persists them to the device (tested on iOS and Android, but may work in Chrome as well)
-- generates a random word to guess for every new game (this is different than the official Wordle which generates a random word once a day)
+- matches official game word per day algorithm (as of April 13, 2022), so playing this game on a device and then playing the official game should yield the same winning answer
+- saves game context between plays. If game session is partially played and app is killed, relaunching the game should reload board to last played state
+- shows a count down timer until next word generates on stats widget
 
 ### TODO:
 - ~~animate winning word tiles~~
 - implement hard mode
 - implement dark/light theme settings
 - ~~implement rules screen~~
-- implement logic to generate a new word once a day that matches official game
+- ~~implement logic to generate a new word once a day that matches official game~~
 
 <p align="center">
-<img src="https://user-images.githubusercontent.com/1800439/160267131-11238e51-d079-4e7f-9f86-fdeddca1cfcd.gif" width="40%" />
-<img src="https://user-images.githubusercontent.com/1800439/160973073-e59ee475-58b8-419d-a1be-e9283e269adc.png" width="40%" />
+<img src="https://user-images.githubusercontent.com/1800439/160267131-11238e51-d079-4e7f-9f86-fdeddca1cfcd.gif" width="25%" />
+<img src="https://user-images.githubusercontent.com/1800439/160973073-e59ee475-58b8-419d-a1be-e9283e269adc.png" width="25%" />
+<img src="https://user-images.githubusercontent.com/1800439/163311031-869f6e7b-bb58-4f71-8d01-c6f6ddd69006.png" width="25%" />
 </p>
 ---
 
