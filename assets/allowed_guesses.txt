@@ -149,6 +149,7 @@ agoge
 agone
 agons
 agood
+agora
 agria
 agrin
 agros
@@ -3016,6 +3017,7 @@ fezes
 fezzy
 fiars
 fiats
+fibre
 fibro
 fices
 fiche
@@ -5409,6 +5411,7 @@ lycea
 lycee
 lycra
 lymes
+lynch
 lynes
 lyres
 lysed
@@ -7192,6 +7195,7 @@ punto
 punts
 punty
 pupae
+pupal
 pupas
 pupus
 purda
@@ -8407,6 +8411,7 @@ slaps
 slart
 slats
 slaty
+slave
 slaws
 slays
 slebs
@@ -10171,6 +10176,7 @@ wells
 welly
 welts
 wembs
+wench
 wends
 wenge
 wenny
