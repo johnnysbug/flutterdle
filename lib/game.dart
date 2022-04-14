@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_wordle/domain.dart';
+import 'package:flutter_wordle/services/context_service.dart';
 import 'package:flutter_wordle/services/keyboard_service.dart';
 import 'package:flutter_wordle/services/matching_service.dart';
 import 'package:flutter_wordle/services/stats_service.dart';
@@ -13,8 +14,8 @@ class Wordle {
   static const cellMargin = 8;
 
   late Context _context;
-  late List<GlobalKey<AnimatorWidgetState>> _shakeKeys = [];
-  late List<GlobalKey<AnimatorWidgetState>> _bounceKeys = [];
+  late final List<GlobalKey<AnimatorWidgetState>> _shakeKeys = [];
+  late final List<GlobalKey<AnimatorWidgetState>> _bounceKeys = [];
 
   final _wordService = WordService();
 
@@ -38,7 +39,17 @@ class Wordle {
     return keys;
   }
 
-  Wordle init() {
+  bool _isToday(DateTime? dateTime) {
+    if (dateTime == null) {
+      return false;
+    }
+    var today = DateTime.now();
+    return dateTime.year == today.year &&
+        dateTime.month == today.month &&
+        dateTime.day == today.day;
+  }
+
+  Future<bool> init() async {
     for (var i = 0; i < totalTries; i++) {
       _shakeKeys.add(GlobalKey<AnimatorWidgetState>());
     }
@@ -46,15 +57,36 @@ class Wordle {
       _bounceKeys.add(GlobalKey<AnimatorWidgetState>());
     }
 
-    _context = Context(List.filled(boardSize, Letter(0, '', GameColor.unset), growable: false),
-        KeyboardService.init().keys, '', '', [], TurnResult.unset, totalTries, 'Good Luck!', 0);
-    Future.delayed(Duration.zero, () async {
-      var stats = await StatsService().loadStats();
-      _context.stats = stats;
-      await _wordService.init();
-      _context.answer = _wordService.randomWord();
-    });
-    return this;
+    var context = await ContextService().loadContext();
+    var stats = await StatsService().loadStats();
+
+    await _wordService.init();
+    if (context == null) {
+      _initContext();
+    } else {
+      if (_isToday(context.lastPlayed)) {
+        _context = context;
+      } else {
+        _initContext();
+      }
+    }
+    _context.stats = stats;
+    return true;
+  }
+
+  void _initContext() {
+    _context = Context(
+        List.filled(boardSize, Letter(0, '', GameColor.unset), growable: false),
+        KeyboardService.init().keys,
+        '',
+        '',
+        [],
+        TurnResult.unset,
+        totalTries,
+        'Good Luck!',
+        0,
+        DateTime.now());
+    _context.answer = _wordService.getWordOfTheDay();
   }
 
   bool didWin(List<Letter> attempt) => attempt.every((l) => l.color == GameColor.exact);
@@ -168,5 +200,8 @@ class Wordle {
         : remaining == 0
             ? 'Sorry, you lost'
             : '';
+    Future.delayed(Duration.zero, () async {
+      await ContextService().saveContext(_context);
+    });
   }
 }

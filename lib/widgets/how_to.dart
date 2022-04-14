@@ -235,7 +235,7 @@ class HowTo extends StatelessWidget {
                                             text: 'WORDLE',
                                             style: TextStyle(fontWeight: FontWeight.bold)),
                                         TextSpan(
-                                            text: ' is available anytime you start a new game.')
+                                            text: ' is available each day.')
                                       ],
                                     )),
                               ),

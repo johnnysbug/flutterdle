@@ -6,7 +6,7 @@ import 'package:flutter_wordle/game.dart';
 import 'package:flutter_wordle/widgets/board.dart';
 import 'package:flutter_wordle/widgets/how_to.dart';
 import 'package:flutter_wordle/widgets/keyboard.dart';
-import 'package:flutter_wordle/widgets/stats.dart' as stat;
+import 'package:flutter_wordle/widgets/stats.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,10 +36,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _game = Wordle();
+  final Wordle _game = Wordle();
+  Future<bool> _initialized = Future<bool>.value(false);
 
   bool _showStats = false;
   bool _showHelp = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initialized = _game.init();
+  }
 
   void _closeStats() {
     setState(() {
@@ -97,6 +104,13 @@ class _MyHomePageState extends State<MyHomePage> {
     _resetMessage();
   }
 
+  void _newGame() {
+    setState(() {
+      _game.init();
+    });
+    _resetMessage();
+  }
+
   void _resetMessage() {
     if (_game.context.message.isNotEmpty) {
       var duration = const Duration(seconds: 2);
@@ -117,22 +131,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _menuItemSelected(int index) {
     switch (index) {
-      case 0:
-        setState(() {
-          _game.init();
-        });
-        _resetMessage();
-        break;
       default:
         break;
     }
-  }
-
-  @override
-  void initState() {
-    _game.init();
-    super.initState();
-    _resetMessage();
   }
 
   @override
@@ -166,7 +167,6 @@ class _MyHomePageState extends State<MyHomePage> {
               child: PopupMenuButton<int>(
                 onSelected: (item) => _menuItemSelected(item),
                 itemBuilder: (context) => [
-                  const PopupMenuItem<int>(value: 0, child: Text('New Game')),
                   const PopupMenuItem<int>(value: 1, child: Text('Settings')),
                 ],
               ),
@@ -174,32 +174,40 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
         backgroundColor: Colors.black,
-        body: Stack(children: [
-          SizedBox.expand(
-            child: Container(
-              color: Colors.black,
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: SizedBox(
-                  width: 500,
-                  height: 670,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                          top: 25,
-                          left: 75,
-                          child: Board(
-                              _game.context, Wordle.rowLength, _game.shakeKeys, _game.bounceKeys)),
-                      Positioned(
-                          top: 470, left: 0, child: Keyboard(_game.context.keys, _onKeyPressed)),
-                      if (_showStats) ...[stat.Stats(_game.context.stats, _closeStats)]
-                    ],
+        body: FutureBuilder(
+            future: _initialized,
+            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+              List<Widget> children = [];
+              if (snapshot.hasData) {
+                _resetMessage();
+                children = [
+                  Positioned(
+                      top: 25,
+                      left: 75,
+                      child: Board(
+                          _game.context, Wordle.rowLength, _game.shakeKeys, _game.bounceKeys)),
+                  Positioned(top: 470, left: 0, child: Keyboard(_game.context.keys, _onKeyPressed)),
+                  if (_showStats) ...[StatsWidget(_game.context.stats, _closeStats, _newGame)]
+                ];
+              }
+              return Stack(children: [
+                SizedBox.expand(
+                  child: Container(
+                    color: Colors.black,
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: SizedBox(
+                        width: 500,
+                        height: 670,
+                        child: Stack(
+                          children: children,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-        ]),
+              ]);
+            }),
       ),
       if (_showHelp) ...[HowTo(_closeHelp)]
     ]);

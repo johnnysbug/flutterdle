@@ -1,11 +1,9 @@
-import 'dart:math' show Random;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 import 'dart:convert';
 import 'dart:core';
 
 class WordService {
-  final _random = Random();
   late List<String> _answers;
   late List<String> _guesses;
 
@@ -25,9 +23,14 @@ class WordService {
     _guesses = await _readFile('assets/allowed_guesses.txt');
   }
 
-  String randomWord() {
-    var index = _random.nextInt(_answers.length - 1);
-    return _answers[index];
+  String getWordOfTheDay() {
+    final baseDate = DateTime(2021, DateTime.june, 19);
+    final today = DateTime.now();
+    final todayDate = DateTime(today.year, today.month, today.day);
+    final millisecondsDiff = (todayDate.difference(baseDate).inMilliseconds);
+    final daysDiff = (millisecondsDiff / 864e5).round();
+    final index = daysDiff % _answers.length;
+    return answers[index];
   }
 
   bool isValidGuess(String guess) {
