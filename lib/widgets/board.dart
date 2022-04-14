@@ -25,6 +25,9 @@ class Board extends StatelessWidget {
         cells.add(Flexible(
           child: Bounce(
             key: _bounceKeys[i],
+            preferences: const AnimationPreferences(
+              autoPlay: AnimationPlayStates.None
+            ),
             child: _buildFlipAnimation(board[i]),
           ),
         ));
