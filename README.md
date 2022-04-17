@@ -18,7 +18,7 @@ I tried to implement the majority of features seen in the actual [Wordle](https:
 ### TODO:
 - ~~animate winning word tiles~~
 - implement hard mode
-- implement dark/light theme settings
+- ~~implement dark/light theme settings~~
 - ~~implement rules screen~~
 - ~~implement logic to generate a new word once a day that matches official game~~
 
