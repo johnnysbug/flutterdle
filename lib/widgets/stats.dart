@@ -247,9 +247,12 @@ class _StatsState extends State<StatsWidget> {
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(primary: Colors.green),
                                     onPressed: () {
+                                      var guesses = widget.stats.lastGuess == -1
+                                          ? 'X'
+                                          : widget.stats.lastGuess;
                                       Share.share(
-                                          'Flurdle ${widget.stats.gameNumber} ${widget.stats.lastGuess}/6\n${widget.stats.lastBoard}',
-                                          subject: 'Flurdle ${widget.stats.lastGuess}/6');
+                                          'Flurdle ${widget.stats.gameNumber} $guesses/6\n${widget.stats.lastBoard}',
+                                          subject: 'Flurdle $guesses/6');
                                     },
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
