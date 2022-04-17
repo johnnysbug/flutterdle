@@ -143,15 +143,18 @@ class Flurdle {
       _context.stats.guessDistribution[index] += 1;
       _context.stats.lastGuess = index + 1;
       _context.stats.won += 1;
-      _context.stats.gameNumber = _gameNumber;
       _context.stats.streak.current += 1;
       if (_context.stats.streak.current > _context.stats.streak.max) {
         _context.stats.streak.max = _context.stats.streak.current;
       }
       _context.stats.lastBoard = _getShareableBoard(index);
     } else {
+      _context.stats.lost += 1;
       _context.stats.streak.current = 0;
+      _context.stats.lastGuess = -1;
     }
+    _context.stats.gameNumber = _gameNumber;
+
     Future.delayed(Duration.zero, () async {
       await StatsService().saveStats(_context.stats);
     });

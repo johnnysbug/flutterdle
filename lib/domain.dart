@@ -118,9 +118,11 @@ class Stats {
         lastBoard = json['lastBoard'] ?? '',
         gameNumber = json['gameNumber'] ?? 0;
 
-  int get played => guessDistribution.reduce((value, g) => value + g);
+  int get played => guessDistribution.reduce((value, g) => value + g) + lost;
 
-  int get percentWon => played == 0 ? 0 : (played / won * 100).round();
+  int get percentWon => played == 0 
+    ? 0 
+    : (won / played * 100).round();
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
