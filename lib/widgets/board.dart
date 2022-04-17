@@ -86,7 +86,7 @@ class Board extends StatelessWidget {
           Column(children: _buildRows()),
           if (_context.message.isNotEmpty) ...[
             Container(
-              decoration: const BoxDecoration(color: Colors.white),
+              decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary),
               child: FittedBox(
                   fit: BoxFit.contain,
                   child: Padding(
@@ -94,8 +94,11 @@ class Board extends StatelessWidget {
                     child: Text(
                       _context.message,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSecondary,
+                        fontWeight: FontWeight.bold, 
+                        fontSize: 20
+                      ),
                     ),
                   )),
             )

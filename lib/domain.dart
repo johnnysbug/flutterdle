@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum GameColor {
   unset,
   none,
@@ -39,10 +41,11 @@ class Context {
   String message;
   int currentIndex;
   DateTime? lastPlayed;
+  ThemeMode theme;
   late Stats stats;
 
   Context(this.board, this.keys, this.answer, this.guess, this.attempt, this.turnResult,
-      this.remainingTries, this.message, this.currentIndex, this.lastPlayed);
+      this.remainingTries, this.message, this.currentIndex, this.lastPlayed, this.theme);
 
   factory Context.fromJson(Map<String, dynamic> json) {
     var board = <Letter>[];
@@ -70,9 +73,11 @@ class Context {
     String message = json['message'];
     int currentIndex = json['currentIndex'];
     DateTime? lastPlayed = json['lastPlayed'] != null ? DateTime.parse(json['lastPlayed']) : null;
+    ThemeMode theme =
+        json['theme'] != null ? ThemeMode.values.byName(json['theme']) : ThemeMode.system;
 
-    return Context(
-        board, keys, answer, guess, attempt, turnResult, remainingTries, message, currentIndex, lastPlayed);
+    return Context(board, keys, answer, guess, attempt, turnResult, remainingTries, message,
+        currentIndex, lastPlayed, theme);
   }
 
   Map<String, dynamic> toJson() {
@@ -87,6 +92,7 @@ class Context {
     data['message'] = message;
     data['currentIndex'] = currentIndex;
     data['lastPlayed'] = (lastPlayed ?? DateTime.now()).toIso8601String();
+    data['theme'] = theme.name;
     return data;
   }
 }

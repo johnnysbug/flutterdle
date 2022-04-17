@@ -1,34 +1,59 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_wordle/app_theme.dart';
 import 'package:flutter_wordle/domain.dart';
 import 'package:flutter_wordle/game.dart';
 import 'package:flutter_wordle/widgets/board.dart';
 import 'package:flutter_wordle/widgets/how_to.dart';
 import 'package:flutter_wordle/widgets/keyboard.dart';
+import 'package:flutter_wordle/widgets/settings.dart';
 import 'package:flutter_wordle/widgets/stats.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final StreamController<ThemeMode> _streamController = StreamController.broadcast();
+  ThemeMode _appTheme = ThemeMode.system;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _streamController.stream.listen((themeMode) {
+      setState(() {
+        _appTheme = themeMode;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Wordle',
+      title: 'Flurdle',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      home: const MyHomePage(title: 'Flutter Wordle'),
+      theme: AppTheme.lightTheme,
+      themeMode: _appTheme,
+      darkTheme: AppTheme.darkTheme,
+      home: MyHomePage(_appTheme, _streamController, title: 'Flurdle'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
+  const MyHomePage(this.themeMode, this.streamController, {Key? key, required this.title})
+      : super(key: key);
+  final ThemeMode themeMode;
+  final StreamController<ThemeMode> streamController;
   final String title;
 
   @override
@@ -36,16 +61,28 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Wordle _game = Wordle();
+  final Flurdle _game = Flurdle();
   Future<bool> _initialized = Future<bool>.value(false);
 
   bool _showStats = false;
   bool _showHelp = false;
+  bool _showSettings = false;
 
   @override
   void initState() {
     super.initState();
-    _initialized = _game.init();
+
+    widget.streamController.stream.listen((themeMode) {
+      if (_game.context.theme != themeMode) {
+        _game.context.theme = themeMode;
+        _game.persist();
+      }
+    });
+
+    _initialized = _game.init().then((value) {
+      widget.streamController.add(_game.context.theme);
+      return value;
+    });
   }
 
   void _closeStats() {
@@ -60,6 +97,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _closeSettings() {
+    setState(() {
+      _showSettings = false;
+    });
+  }
+
   void _onKeyPressed(String val) {
     if (_game.context.remainingTries == 0) {
       return;
@@ -67,11 +110,12 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _game.evaluateTurn(val);
       if (_game.context.turnResult == TurnResult.unsuccessful) {
-        var index = (_game.context.remainingTries - Wordle.totalTries).abs();
+        var index = (_game.context.remainingTries - Flurdle.totalTries).abs();
         _game.shakeKeys[index].currentState?.forward();
       } else if (_game.context.turnResult == TurnResult.successful) {
         for (var i = 0; i < _game.context.attempt.length; i++) {
-          var offset = i + ((Wordle.totalTries - _game.context.remainingTries) * Wordle.rowLength);
+          var offset =
+              i + ((Flurdle.totalTries - _game.context.remainingTries) * Flurdle.rowLength);
           Timer(Duration(milliseconds: (i * 200)), () {
             setState(() {
               _game.context.board[offset] = _game.context.attempt[i];
@@ -84,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Timer(const Duration(seconds: 2), () {
             for (var i = 0; i < _game.context.attempt.length; i++) {
               var offset =
-                  i + ((Wordle.totalTries - _game.context.remainingTries) * Wordle.rowLength);
+                  i + ((Flurdle.totalTries - _game.context.remainingTries) * Flurdle.rowLength);
               Timer(Duration(milliseconds: (i * 200)), () {
                 setState(() {
                   _game.bounceKeys[offset].currentState?.forward();
@@ -129,20 +173,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _menuItemSelected(int index) {
-    switch (index) {
-      default:
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
       Scaffold(
         appBar: AppBar(
           leading: Padding(
-              padding: const EdgeInsets.only(right: 20.0),
+              padding: const EdgeInsets.only(left: 16, right: 20.0),
               child: GestureDetector(
                 onTap: () => _openHelp(),
                 child: const Icon(
@@ -162,15 +199,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     size: 26.0,
                   ),
                 )),
-            RotatedBox(
-              quarterTurns: 1,
-              child: PopupMenuButton<int>(
-                onSelected: (item) => _menuItemSelected(item),
-                itemBuilder: (context) => [
-                  const PopupMenuItem<int>(value: 1, child: Text('Settings')),
-                ],
-              ),
-            ),
+            Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () => _openSettings(),
+                  child: const Icon(
+                    Icons.settings,
+                    size: 26.0,
+                  ),
+                )),
           ],
         ),
         body: FutureBuilder(
@@ -184,23 +221,32 @@ class _MyHomePageState extends State<MyHomePage> {
                       top: 25,
                       left: 25,
                       child: Board(
-                          _game.context, Wordle.rowLength, _game.shakeKeys, _game.bounceKeys)),
+                          _game.context, Flurdle.rowLength, _game.shakeKeys, _game.bounceKeys)),
                   Positioned(top: 470, left: 0, child: Keyboard(_game.context.keys, _onKeyPressed)),
-                  if (_showStats) ...[StatsWidget(_game.context.stats, _closeStats, _newGame)]
+                  if (_showStats) ...[
+                    Positioned(
+                        top: 50,
+                        left: 0,
+                        child: StatsWidget(_game.context.stats, _closeStats, _newGame))
+                  ],
+                  if (_showSettings) ...[
+                    Positioned(
+                        top: 50,
+                        left: 0,
+                        child: SettingsWidget(_closeSettings, widget.streamController,
+                            widget.themeMode == ThemeMode.dark))
+                  ]
                 ];
               }
               return Stack(children: [
                 SizedBox.expand(
-                  child: Container(
-                    color: Colors.black,
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: SizedBox(
-                        width: 400,
-                        height: 670,
-                        child: Stack(
-                          children: children,
-                        ),
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: SizedBox(
+                      width: 400,
+                      height: 670,
+                      child: Stack(
+                        children: children,
                       ),
                     ),
                   ),
@@ -221,6 +267,12 @@ class _MyHomePageState extends State<MyHomePage> {
   _openStats() {
     setState(() {
       _showStats = true;
+    });
+  }
+
+  _openSettings() {
+    setState(() {
+      _showSettings = true;
     });
   }
 }

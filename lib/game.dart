@@ -7,7 +7,7 @@ import 'package:flutter_wordle/services/matching_service.dart';
 import 'package:flutter_wordle/services/stats_service.dart';
 import 'package:flutter_wordle/services/word_service.dart';
 
-class Wordle {
+class Flurdle {
   static const boardSize = 30;
   static const rowLength = 5;
   static const totalTries = 6;
@@ -71,14 +71,14 @@ class Wordle {
       if (_isToday(context.lastPlayed)) {
         _context = context;
       } else {
-        _initContext();
+        _initContext(theme: context.theme);
       }
     }
     _context.stats = stats;
     return true;
   }
 
-  void _initContext() {
+  void _initContext({ThemeMode theme = ThemeMode.system}) {
     _context = Context(
         List.filled(boardSize, Letter(0, '', GameColor.unset), growable: false),
         KeyboardService.init().keys,
@@ -89,7 +89,8 @@ class Wordle {
         totalTries,
         'Good Luck!',
         0,
-        DateTime.now());
+        DateTime.now(),
+        theme);
     _context.answer = _wordService.getWordOfTheDay(baseDate);
   }
 
@@ -205,6 +206,10 @@ class Wordle {
         : remaining == 0
             ? 'Sorry, you lost'
             : '';
+    persist();
+  }
+
+  void persist() {
     Future.delayed(Duration.zero, () async {
       await ContextService().saveContext(_context);
     });

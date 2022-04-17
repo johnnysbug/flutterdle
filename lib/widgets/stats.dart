@@ -65,212 +65,218 @@ class _StatsState extends State<StatsWidget> {
     final seconds = padDigits(_durationUntilTomorrow!.inSeconds.remainder(60));
 
     return Material(
-      color: Colors.black.withOpacity(0.6),
+      shadowColor: Colors.black12,
       child: FittedBox(
           fit: BoxFit.contain,
           child: SizedBox(
               width: 500,
-              height: 670,
+              height: 500,
               child: Stack(children: [
                 Positioned(
-                    top: 75,
-                    left: 45,
+                    top: 0,
+                    left: 0,
                     child: SizedBox(
                       width: 410,
                       height: 500,
-                      child: Container(
-                        color: const Color.fromARGB(255, 29, 29, 29),
-                        child: Column(children: [
-                          Row(
+                      child: Column(children: [
+                        Row(
+                          children: [
+                            const Spacer(),
+                            TextButton(
+                                onPressed: () => widget.close(),
+                                child: const Text("X",
+                                    style: TextStyle(
+                                        fontSize: 20)))
+                          ],
+                        ),
+                        const Center(
+                            child: Text(
+                          "STATISTICS",
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                        )),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Spacer(),
-                              TextButton(
-                                  onPressed: () => widget.close(),
-                                  child: const Text("X",
-                                      style: TextStyle(color: Colors.white, fontSize: 20)))
+                              Padding(
+                                padding: const EdgeInsets.only(left: 4, right: 4),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      widget.stats.played.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 36,
+                                      ),
+                                    ),
+                                    const Text(
+                                      "Played",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 4, right: 4),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      widget.stats.percentWon.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 36,
+                                      ),
+                                    ),
+                                    const Text(
+                                      "Win %",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 4, right: 4),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      widget.stats.streak.current.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 36,
+                                      ),
+                                    ),
+                                    Column(children: const [
+                                      Center(
+                                          child: Text(
+                                        "Current",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      )),
+                                      Center(
+                                          child: Text(
+                                        "Streak",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ))
+                                    ]),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 4, right: 4),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      widget.stats.streak.max.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 36,
+                                      ),
+                                    ),
+                                    Column(children: const [
+                                      Center(
+                                          child: Text(
+                                        "Max",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      )),
+                                      Center(
+                                          child: Text(
+                                        "Streak",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ))
+                                    ]),
+                                  ],
+                                ),
+                              )
                             ],
                           ),
-                          const Center(
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: Center(
                               child: Text(
-                            "STATISTICS",
+                            "GUESS DISTRIBUTION",
                             style: TextStyle(
-                              color: Colors.white,
                               fontSize: 18,
                             ),
                           )),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 20, 10, 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 4, right: 4),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                          child: _guessDistribution(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 16),
                                   child: Column(
                                     children: [
+                                      const Center(
+                                          child: Text(
+                                        "NEXT FLURDLE",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      )),
                                       Text(
-                                        widget.stats.played.toString(),
+                                        '$hours:$minutes:$seconds',
                                         style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 36,
+                                          fontSize: 34,
                                         ),
                                       ),
-                                      const Text(
-                                        "Played",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                        ),
-                                      )
                                     ],
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 4, right: 4),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        widget.stats.percentWon.toString(),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 36,
-                                        ),
-                                      ),
-                                      const Text(
-                                        "Win %",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 4, right: 4),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        widget.stats.streak.current.toString(),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 36,
-                                        ),
-                                      ),
-                                      const Text(
-                                        "Current Streak",
-                                        softWrap: true,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 4, right: 4),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        widget.stats.streak.max.toString(),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 36,
-                                        ),
-                                      ),
-                                      const Text(
-                                        "Max Streak",
-                                        softWrap: true,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.only(top: 20),
-                            child: Center(
-                                child: Text(
-                              "GUESS DISTRIBUTION",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
                               ),
-                            )),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                            child: _guessDistribution(),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 16),
-                                    child: Column(
-                                      children: [
-                                        const Center(
-                                            child: Text(
-                                          "NEXT WORDLE",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                          ),
-                                        )),
-                                        Text(
-                                          '$hours:$minutes:$seconds',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 34,
-                                          ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 16, left: 16),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(primary: Colors.green),
+                                    onPressed: () {
+                                      Share.share(
+                                          'Flurdle ${widget.stats.gameNumber} ${widget.stats.lastGuess}/6\n${widget.stats.lastBoard}',
+                                          subject: 'Flurdle ${widget.stats.lastGuess}/6');
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: const [
+                                        Text('SHARE',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                            )),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Icon(
+                                          Icons.share,
+                                          color: Colors.white,
+                                          size: 24.0,
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 16, left: 16),
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(primary: Colors.green),
-                                      onPressed: () {
-                                        Share.share(
-                                            'Flutter Wordle ${widget.stats.gameNumber} ${widget.stats.lastGuess}/6\n${widget.stats.lastBoard}',
-                                            subject: 'Flutter Wordle ${widget.stats.lastGuess}/6');
-                                      },
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: const [
-                                          Text('SHARE',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                                fontSize: 18,
-                                              )),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Icon(
-                                            Icons.share,
-                                            size: 24.0,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ]),
-                      ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ]),
                     ))
               ]))),
     );
@@ -281,7 +287,8 @@ class _StatsState extends State<StatsWidget> {
       return const Center(
           child: Text(
         "No Data",
-        style: TextStyle(color: Colors.white, fontSize: 20),
+        style: TextStyle(
+            fontSize: 20),
       ));
     }
 
@@ -305,7 +312,6 @@ class _StatsState extends State<StatsWidget> {
             child: Text(
               rowNumber.toString(),
               style: const TextStyle(
-                color: Colors.white,
                 fontSize: 16,
               ),
             ),
@@ -315,7 +321,7 @@ class _StatsState extends State<StatsWidget> {
             child: Container(
                 color: isCurrent ? Colors.green : const Color.fromARGB(255, 90, 87, 87),
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 4),
+                  padding: const EdgeInsets.only(left: 4, right: 4),
                   child: Text(
                     completed.toString(),
                     textAlign: TextAlign.end,

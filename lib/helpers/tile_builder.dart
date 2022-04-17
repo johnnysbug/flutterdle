@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_wordle/app_theme.dart';
 import 'package:flutter_wordle/domain.dart';
 
 class TileBuilder {
@@ -12,7 +13,7 @@ class TileBuilder {
       case GameColor.none:
         return const Color.fromARGB(255, 90, 87, 87);
       case GameColor.unset:
-        return Colors.black;
+        return Colors.transparent;
     }
   }
 
@@ -35,7 +36,10 @@ class TileBuilder {
               child: Text(
                 letter,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: (color != GameColor.unset) ? Colors.white : null,
+                  fontWeight: FontWeight.bold
+                  ),
               )),
         ),
       ),

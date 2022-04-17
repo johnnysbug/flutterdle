@@ -41,7 +41,9 @@ class Keyboard extends StatelessWidget {
               child: Text(
                 letter,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: letter.length > 1 ? 10 : 18, color: Colors.white),
+                style: TextStyle(
+                  fontSize: letter.length > 1 ? 10 : 18, 
+                  color: color != GameColor.unset ? Colors.white : null),
               )),
         ),
       ),
