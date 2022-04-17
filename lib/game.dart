@@ -13,11 +13,15 @@ class Wordle {
   static const totalTries = 6;
   static const cellMargin = 8;
 
+  final baseDate = DateTime(2021, DateTime.june, 19);
+
   late Context _context;
   late final List<GlobalKey<AnimatorWidgetState>> _shakeKeys = [];
   late final List<GlobalKey<AnimatorWidgetState>> _bounceKeys = [];
 
   final _wordService = WordService();
+
+  int get _gameNumber => DateTime.now().difference(baseDate).inDays;
 
   void updateBoard(List<Letter> attempt) {
     for (var i = 0; i < attempt.length; i++) {
@@ -86,7 +90,7 @@ class Wordle {
         'Good Luck!',
         0,
         DateTime.now());
-    _context.answer = _wordService.getWordOfTheDay();
+    _context.answer = _wordService.getWordOfTheDay(baseDate);
   }
 
   bool didWin(List<Letter> attempt) => attempt.every((l) => l.color == GameColor.exact);
@@ -96,7 +100,7 @@ class Wordle {
       case 5:
         return 'Amazing!';
       case 4:
-        return 'Fantasic!';
+        return 'Fantastic!';
       case 3:
         return 'Great!';
       case 2:
@@ -138,6 +142,7 @@ class Wordle {
       _context.stats.guessDistribution[index] += 1;
       _context.stats.lastGuess = index + 1;
       _context.stats.won += 1;
+      _context.stats.gameNumber = _gameNumber;
       _context.stats.streak.current += 1;
       if (_context.stats.streak.current > _context.stats.streak.max) {
         _context.stats.streak.max = _context.stats.streak.current;

@@ -98,8 +98,10 @@ class Stats {
   List<int> guessDistribution;
   int lastGuess;
   String lastBoard;
+  int gameNumber;
 
-  Stats(this.won, this.lost, this.streak, this.guessDistribution, this.lastGuess, this.lastBoard);
+  Stats(this.won, this.lost, this.streak, this.guessDistribution, this.lastGuess, this.lastBoard,
+      this.gameNumber);
 
   Stats.fromJson(Map<String, dynamic> json)
       : won = json['won'],
@@ -107,7 +109,8 @@ class Stats {
         streak = json['streak'] = Streak.fromJson(json['streak']),
         guessDistribution = json['guessDistribution'].cast<int>(),
         lastGuess = json['lastGuess'],
-        lastBoard = json['lastBoard'] ?? '';
+        lastBoard = json['lastBoard'] ?? '',
+        gameNumber = json['gameNumber'] ?? 0;
 
   int get played => guessDistribution.reduce((value, g) => value + g);
 
@@ -121,6 +124,7 @@ class Stats {
     data['guessDistribution'] = guessDistribution;
     data['lastGuess'] = lastGuess;
     data['lastBoard'] = lastBoard;
+    data['gameNumber'] = gameNumber;
     return data;
   }
 }

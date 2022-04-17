@@ -242,7 +242,7 @@ class _StatsState extends State<StatsWidget> {
                                       style: ElevatedButton.styleFrom(primary: Colors.green),
                                       onPressed: () {
                                         Share.share(
-                                            'Flutter Wordle ${widget.stats.lastGuess}/6\n${widget.stats.lastBoard}',
+                                            'Flutter Wordle ${widget.stats.gameNumber} ${widget.stats.lastGuess}/6\n${widget.stats.lastBoard}',
                                             subject: 'Flutter Wordle ${widget.stats.lastGuess}/6');
                                       },
                                       child: Row(

@@ -23,8 +23,7 @@ class WordService {
     _guesses = await _readFile('assets/allowed_guesses.txt');
   }
 
-  String getWordOfTheDay() {
-    final baseDate = DateTime(2021, DateTime.june, 19);
+  String getWordOfTheDay(DateTime baseDate) {
     final today = DateTime.now();
     final todayDate = DateTime(today.year, today.month, today.day);
     final millisecondsDiff = (todayDate.difference(baseDate).inMilliseconds);
