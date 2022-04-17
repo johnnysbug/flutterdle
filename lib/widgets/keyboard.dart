@@ -22,10 +22,10 @@ class Keyboard extends StatelessWidget {
 
   Widget _buildCell(String letter, GameColor color) {
     return SizedBox(
-      width: letter.length > 1 ? 68 : 43,
+      width: letter.length > 1 ? 60 : 40,
       height: 58,
       child: Padding(
-        padding: const EdgeInsets.all(3.0),
+        padding: const EdgeInsets.all(2.0),
         child: Container(
           decoration: BoxDecoration(
               border: Border.all(
@@ -41,7 +41,7 @@ class Keyboard extends StatelessWidget {
               child: Text(
                 letter,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: letter.length > 1 ? 12 : 20, color: Colors.white),
+                style: TextStyle(fontSize: letter.length > 1 ? 10 : 18, color: Colors.white),
               )),
         ),
       ),
@@ -63,6 +63,6 @@ class Keyboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(width: 500, height: 200, child: Column(children: _buildKeys()));
+    return SizedBox(width: 400, height: 200, child: Column(children: _buildKeys()));
   }
 }

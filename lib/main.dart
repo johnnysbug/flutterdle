@@ -173,7 +173,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-        backgroundColor: Colors.black,
         body: FutureBuilder(
             future: _initialized,
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -183,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children = [
                   Positioned(
                       top: 25,
-                      left: 75,
+                      left: 25,
                       child: Board(
                           _game.context, Wordle.rowLength, _game.shakeKeys, _game.bounceKeys)),
                   Positioned(top: 470, left: 0, child: Keyboard(_game.context.keys, _onKeyPressed)),
@@ -197,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: FittedBox(
                       fit: BoxFit.contain,
                       child: SizedBox(
-                        width: 500,
+                        width: 400,
                         height: 670,
                         child: Stack(
                           children: children,

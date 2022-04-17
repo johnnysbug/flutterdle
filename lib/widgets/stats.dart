@@ -212,58 +212,57 @@ class _StatsState extends State<StatsWidget> {
                             child: Row(
                               children: [
                                 Expanded(
-                                  child: Column(
-                                    children: [
-                                      const Center(
-                                          child: Text(
-                                        "NEXT WORDLE",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      )),
-                                      Text(
-                                        '$hours:$minutes:$seconds',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 36,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const VerticalDivider(
-                                  width: 20,
-                                  thickness: 3,
-                                  indent: 20,
-                                  endIndent: 0,
-                                  color: Colors.white,
-                                ),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(primary: Colors.green),
-                                    onPressed: () {
-                                      Share.share(
-                                          'Flutter Wordle ${widget.stats.lastGuess}/6\n${widget.stats.lastBoard}',
-                                          subject: 'Flutter Wordle ${widget.stats.lastGuess}/6');
-                                    },
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: const [
-                                        Text('SHARE',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                              fontSize: 18,
-                                            )),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Icon(
-                                          Icons.share,
-                                          size: 24.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 16),
+                                    child: Column(
+                                      children: [
+                                        const Center(
+                                            child: Text(
+                                          "NEXT WORDLE",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                          ),
+                                        )),
+                                        Text(
+                                          '$hours:$minutes:$seconds',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 34,
+                                          ),
                                         ),
                                       ],
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 16, left: 16),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(primary: Colors.green),
+                                      onPressed: () {
+                                        Share.share(
+                                            'Flutter Wordle ${widget.stats.lastGuess}/6\n${widget.stats.lastBoard}',
+                                            subject: 'Flutter Wordle ${widget.stats.lastGuess}/6');
+                                      },
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: const [
+                                          Text('SHARE',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                              )),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Icon(
+                                            Icons.share,
+                                            size: 24.0,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
