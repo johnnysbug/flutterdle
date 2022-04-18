@@ -1,26 +1,25 @@
-# Flutter Wordle clone
+# Flutterdle clone
 
-I wanted to challenge myself after writing a [version of Wordle using F#](https://github.com/johnnysbug/fsharp-command-line-wordle), so I decided to try Flutter. This was a fun project, since Flutter allows for rapid feedback cycles during UI development.
+I wanted to challenge myself after writing a [version of Flutterdle using F#](https://github.com/johnnysbug/fsharp-command-line-wordle), so I decided to try Flutter. This was a fun project, since Flutter allows for rapid feedback cycles during UI development.
 
 You should be able to clone this repo and run it yourself, given you have setup your Flutter development environment. Here's a link to Flutter's [online documentation](https://flutter.dev/docs) for getting started.
 
-I tried to implement the majority of features seen in the actual [Wordle](https://www.nytimes.com/games/wordle/index.html) game. Here's a list of features:
+I tried to implement the majority of features seen in the actual game(https://www.nytimes.com/games/wordle/index.html) game. Here's a list of features:
 
 - displays shake animation when a word doesn't exist in the word list or is shorter than five characters
 - flips the letter tiles in a staggered manner when a guess is accepted
+- animates winning word tiles
 - gives feeback phrases when winning the game
+- dark/light theme settings
+- rules screen
+- generates same word as original each day
 - updates keyboard to show used letters with appropriate colors
 - tracks game stats and persists them to the device (tested on iOS and Android, but may work in Chrome as well)
-- matches official game word per day algorithm (as of April 13, 2022), so playing this game on a device and then playing the official game should yield the same winning answer
-- saves game context between plays. If game session is partially played and app is killed, relaunching the game should reload board to last played state
-- shows a count down timer until next word generates on stats widget
+- saves game context during play
+- shows a count down timer until next word generates on stats screen
 
 ### TODO:
-- ~~animate winning word tiles~~
 - implement hard mode
-- ~~implement dark/light theme settings~~
-- ~~implement rules screen~~
-- ~~implement logic to generate a new word once a day that matches official game~~
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/1800439/160267131-11238e51-d079-4e7f-9f86-fdeddca1cfcd.gif" width="25%" />
