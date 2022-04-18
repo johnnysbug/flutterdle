@@ -1,6 +1,6 @@
-import 'package:flutter_wordle/domain.dart';
+import 'package:flutterdle/domain.dart';
 import 'package:test/test.dart';
-import 'package:flutter_wordle/services/matching_service.dart';
+import 'package:flutterdle/services/matching_service.dart';
 import 'package:tuple/tuple.dart';
 
 bool compareMatches(List<Letter> first, List<Letter> second) {

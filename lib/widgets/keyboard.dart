@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_wordle/domain.dart';
+import 'package:flutterdle/domain.dart';
 
 class Keyboard extends StatelessWidget {
   final List<List<Letter>> _keys;

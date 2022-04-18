@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_wordle/domain.dart' as stats;
-import 'package:flutter_wordle/helpers/tile_builder.dart';
+import 'package:flutterdle/domain.dart' as stats;
+import 'package:flutterdle/helpers/tile_builder.dart';
 
 class HowTo extends StatelessWidget {
   const HowTo(this._close, {Key? key}) : super(key: key);

@@ -1,4 +1,4 @@
-# Flutterdle clone
+# Flutterdle
 
 I wanted to challenge myself after writing a [version of Flutterdle using F#](https://github.com/johnnysbug/fsharp-command-line-wordle), so I decided to try Flutter. This was a fun project, since Flutter allows for rapid feedback cycles during UI development.
 

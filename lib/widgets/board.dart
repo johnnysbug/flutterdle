@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
-import 'package:flutter_wordle/domain.dart';
-import 'package:flutter_wordle/helpers/tile_builder.dart';
+import 'package:flutterdle/domain.dart';
+import 'package:flutterdle/helpers/tile_builder.dart';
 
 class Board extends StatelessWidget {
   final List<GlobalKey<AnimatorWidgetState>> _shakeKeys;

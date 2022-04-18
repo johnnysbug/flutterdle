@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
-import 'package:flutter_wordle/domain.dart';
-import 'package:flutter_wordle/services/context_service.dart';
-import 'package:flutter_wordle/services/keyboard_service.dart';
-import 'package:flutter_wordle/services/matching_service.dart';
-import 'package:flutter_wordle/services/stats_service.dart';
-import 'package:flutter_wordle/services/word_service.dart';
+import 'package:flutterdle/domain.dart';
+import 'package:flutterdle/services/context_service.dart';
+import 'package:flutterdle/services/keyboard_service.dart';
+import 'package:flutterdle/services/matching_service.dart';
+import 'package:flutterdle/services/stats_service.dart';
+import 'package:flutterdle/services/word_service.dart';
 
 class Flurdle {
   static const boardSize = 30;

@@ -1,4 +1,4 @@
-import 'package:flutter_wordle/domain.dart';
+import 'package:flutterdle/domain.dart';
 
 class KeyboardService {
   final List<List<Letter>> _keys;

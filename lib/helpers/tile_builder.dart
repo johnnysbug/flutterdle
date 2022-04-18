@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_wordle/app_theme.dart';
-import 'package:flutter_wordle/domain.dart';
+import 'package:flutterdle/domain.dart';
 
 class TileBuilder {
   

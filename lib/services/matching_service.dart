@@ -1,4 +1,4 @@
-import 'package:flutter_wordle/domain.dart';
+import 'package:flutterdle/domain.dart';
 
 class MatchingService {
   static Iterable<Letter> _convert(String word) {

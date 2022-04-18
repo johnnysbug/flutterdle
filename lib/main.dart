@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_wordle/app_theme.dart';
-import 'package:flutter_wordle/domain.dart';
-import 'package:flutter_wordle/game.dart';
-import 'package:flutter_wordle/widgets/board.dart';
-import 'package:flutter_wordle/widgets/how_to.dart';
-import 'package:flutter_wordle/widgets/keyboard.dart';
-import 'package:flutter_wordle/widgets/settings.dart';
-import 'package:flutter_wordle/widgets/stats.dart';
+import 'package:flutterdle/app_theme.dart';
+import 'package:flutterdle/domain.dart';
+import 'package:flutterdle/game.dart';
+import 'package:flutterdle/widgets/board.dart';
+import 'package:flutterdle/widgets/how_to.dart';
+import 'package:flutterdle/widgets/keyboard.dart';
+import 'package:flutterdle/widgets/settings.dart';
+import 'package:flutterdle/widgets/stats.dart';
 
 void main() {
   runApp(const MyApp());

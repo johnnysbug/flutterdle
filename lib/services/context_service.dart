@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_wordle/domain.dart';
+import 'package:flutterdle/domain.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ContextService {

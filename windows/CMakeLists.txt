@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(flutter_wordle LANGUAGES CXX)
+project(flutterdle LANGUAGES CXX)
 
-set(BINARY_NAME "flutter_wordle")
+set(BINARY_NAME "flutterdle")
 
 cmake_policy(SET CMP0063 NEW)
 

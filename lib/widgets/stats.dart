@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_wordle/domain.dart';
+import 'package:flutterdle/domain.dart';
 import 'package:share_plus/share_plus.dart';
 
 class StatsWidget extends StatefulWidget {
