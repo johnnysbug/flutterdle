@@ -22,16 +22,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final StreamController<ThemeMode> _streamController = StreamController.broadcast();
-  ThemeMode _appTheme = ThemeMode.system;
+  final StreamController<Settings> _streamController = StreamController.broadcast();
+  ThemeMode _appTheme = ThemeMode.dark;
 
   @override
   void initState() {
     super.initState();
 
-    _streamController.stream.listen((themeMode) {
+    _streamController.stream.listen((settings) {
       setState(() {
-        _appTheme = themeMode;
+        _appTheme = settings.isDarkMode ? ThemeMode.dark : ThemeMode.light;
       });
     });
   }
@@ -53,7 +53,7 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage(this.themeMode, this.streamController, {Key? key, required this.title})
       : super(key: key);
   final ThemeMode themeMode;
-  final StreamController<ThemeMode> streamController;
+  final StreamController<Settings> streamController;
   final String title;
 
   @override
@@ -61,7 +61,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Flurdle _game = Flurdle();
+  final Flutterdle _game = Flutterdle();
   Future<bool> _initialized = Future<bool>.value(false);
 
   bool _showStats = false;
@@ -72,15 +72,15 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    widget.streamController.stream.listen((themeMode) {
-      if (_game.context.theme != themeMode) {
-        _game.context.theme = themeMode;
+    widget.streamController.stream.listen((settings) {
+      if (_game.settings.isDarkMode != settings.isDarkMode) {
+        _game.settings.isDarkMode = settings.isDarkMode;
         _game.persist();
       }
     });
 
     _initialized = _game.init().then((value) {
-      widget.streamController.add(_game.context.theme);
+      widget.streamController.add(_game.settings);
       return value;
     });
   }
@@ -110,15 +110,15 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _game.evaluateTurn(val);
       if (_game.context.turnResult == TurnResult.unsuccessful) {
-        var index = (_game.context.remainingTries - Flurdle.totalTries).abs();
+        var index = (_game.context.remainingTries - Flutterdle.totalTries).abs();
         _game.shakeKeys[index].currentState?.forward();
       } else if (_game.context.turnResult == TurnResult.successful) {
         for (var i = 0; i < _game.context.attempt.length; i++) {
           var offset =
-              i + ((Flurdle.totalTries - _game.context.remainingTries) * Flurdle.rowLength);
+              i + ((Flutterdle.totalTries - _game.context.remainingTries) * Flutterdle.rowLength);
           Timer(Duration(milliseconds: (i * 200)), () {
             setState(() {
-              _game.context.board[offset] = _game.context.attempt[i];
+              _game.context.board.tiles[offset] = _game.context.attempt[i];
             });
           });
         }
@@ -127,8 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
         if (didWin) {
           Timer(const Duration(seconds: 2), () {
             for (var i = 0; i < _game.context.attempt.length; i++) {
-              var offset =
-                  i + ((Flurdle.totalTries - _game.context.remainingTries) * Flurdle.rowLength);
+              var offset = i +
+                  ((Flutterdle.totalTries - _game.context.remainingTries) * Flutterdle.rowLength);
               Timer(Duration(milliseconds: (i * 200)), () {
                 setState(() {
                   _game.bounceKeys[offset].currentState?.forward();
@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
         }
         Timer(Duration(seconds: delay), () {
           setState(() {
-            _game.updateAfterSuccessfulGuess();
+            _game.updateAfterSuccessfulGuess().then((_) => setState(() {}));
             _resetMessage();
           });
         });
@@ -175,87 +175,92 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Scaffold(
-        appBar: AppBar(
-          leading: Padding(
-              padding: const EdgeInsets.only(left: 16, right: 20.0),
-              child: GestureDetector(
-                onTap: () => _openHelp(),
-                child: const Icon(
-                  Icons.help_outline,
-                  size: 26.0,
+    return FutureBuilder(
+        future: _initialized,
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          List<Widget> children = [];
+          if (snapshot.hasData) {
+            _resetMessage();
+            children = [
+              Scaffold(
+                  appBar: AppBar(
+                    leading: Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 20.0),
+                        child: GestureDetector(
+                          onTap: () => _openHelp(),
+                          child: const Icon(
+                            Icons.help_outline,
+                            size: 26.0,
+                          ),
+                        )),
+                    title: Text(widget.title),
+                    centerTitle: true,
+                    actions: <Widget>[
+                      Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: GestureDetector(
+                            onTap: () => _openStats(),
+                            child: const Icon(
+                              Icons.leaderboard,
+                              size: 26.0,
+                            ),
+                          )),
+                      Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: GestureDetector(
+                            onTap: () => _openSettings(),
+                            child: const Icon(
+                              Icons.settings,
+                              size: 26.0,
+                            ),
+                          )),
+                    ],
+                  ),
+                  body: Stack(children: [
+                    SizedBox.expand(
+                        child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: SizedBox(
+                                width: 400,
+                                height: 670,
+                                child: Stack(children: [
+                                  Positioned(
+                                      top: 25,
+                                      left: 25,
+                                      child: BoardWidget(_game.context, Flutterdle.rowLength,
+                                          _game.shakeKeys, _game.bounceKeys)),
+                                  Positioned(
+                                      top: 470,
+                                      left: 0,
+                                      child: Keyboard(_game.context.keys, _onKeyPressed)),
+                                  if (_showStats) ...[
+                                    Positioned(
+                                        top: 50,
+                                        left: 0,
+                                        child: StatsWidget(_game.stats, _closeStats, _newGame))
+                                  ],
+                                  if (_showSettings) ...[
+                                    Positioned(
+                                        top: 50,
+                                        left: 0,
+                                        child: SettingsWidget(_closeSettings,
+                                            widget.streamController, _game.settings))
+                                  ]
+                                ])))),
+                  ])),
+              if (_showHelp) ...[SafeArea(child: HowTo(_closeHelp))]
+            ];
+          } else {
+            children = [
+              Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
-              )),
-          title: Text(widget.title),
-          centerTitle: true,
-          actions: <Widget>[
-            Padding(
-                padding: const EdgeInsets.only(right: 20.0),
-                child: GestureDetector(
-                  onTap: () => _openStats(),
-                  child: const Icon(
-                    Icons.leaderboard,
-                    size: 26.0,
-                  ),
-                )),
-            Padding(
-                padding: const EdgeInsets.only(right: 20.0),
-                child: GestureDetector(
-                  onTap: () => _openSettings(),
-                  child: const Icon(
-                    Icons.settings,
-                    size: 26.0,
-                  ),
-                )),
-          ],
-        ),
-        body: FutureBuilder(
-            future: _initialized,
-            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-              List<Widget> children = [];
-              if (snapshot.hasData) {
-                _resetMessage();
-                children = [
-                  Positioned(
-                      top: 25,
-                      left: 25,
-                      child: Board(
-                          _game.context, Flurdle.rowLength, _game.shakeKeys, _game.bounceKeys)),
-                  Positioned(top: 470, left: 0, child: Keyboard(_game.context.keys, _onKeyPressed)),
-                  if (_showStats) ...[
-                    Positioned(
-                        top: 50,
-                        left: 0,
-                        child: StatsWidget(_game.context.stats, _closeStats, _newGame))
-                  ],
-                  if (_showSettings) ...[
-                    Positioned(
-                        top: 50,
-                        left: 0,
-                        child: SettingsWidget(_closeSettings, widget.streamController,
-                            widget.themeMode == ThemeMode.dark))
-                  ]
-                ];
-              }
-              return Stack(children: [
-                SizedBox.expand(
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: SizedBox(
-                      width: 400,
-                      height: 670,
-                      child: Stack(
-                        children: children,
-                      ),
-                    ),
-                  ),
-                ),
-              ]);
-            }),
-      ),
-      if (_showHelp) ...[HowTo(_closeHelp)]
-    ]);
+              )
+            ];
+          }
+          return Stack(children: children);
+        });
   }
 
   _openHelp() {

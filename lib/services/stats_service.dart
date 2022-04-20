@@ -23,6 +23,28 @@ class StatsService {
     return Stats.fromJson(map);
   }
 
+  Future<Stats> updateStats(
+      Stats stats, bool won, int index, String Function(int n) getSharable, int gameNumber) async {
+    if (won) {
+      stats.guessDistribution[index] += 1;
+      stats.lastGuess = index + 1;
+      stats.won += 1;
+      stats.streak.current += 1;
+      if (stats.streak.current > stats.streak.max) {
+        stats.streak.max = stats.streak.current;
+      }
+    } else {
+      stats.lost += 1;
+      stats.streak.current = 0;
+      stats.lastGuess = -1;
+    }
+    stats.lastBoard = getSharable(index);
+    stats.gameNumber = gameNumber;
+
+    await saveStats(stats);
+    return stats;
+  }
+
   Future<void> saveStats(Stats stats) async {
     final directory = await getApplicationDocumentsDirectory();
     await File("${directory.path}/stats.json").writeAsString(json.encode(stats.toJson()));

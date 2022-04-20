@@ -4,29 +4,36 @@ import 'package:flutterdle/domain.dart';
 import 'package:flutterdle/services/context_service.dart';
 import 'package:flutterdle/services/keyboard_service.dart';
 import 'package:flutterdle/services/matching_service.dart';
+import 'package:flutterdle/services/settings_service.dart';
 import 'package:flutterdle/services/stats_service.dart';
 import 'package:flutterdle/services/word_service.dart';
 
-class Flurdle {
+class Flutterdle {
   static const boardSize = 30;
   static const rowLength = 5;
   static const totalTries = 6;
   static const cellMargin = 8;
 
+  static final StatsService _statsService = StatsService();
+
   final baseDate = DateTime(2021, DateTime.june, 19);
 
   late Context _context;
+  late Stats _stats;
+  late Settings _settings;
   late final List<GlobalKey<AnimatorWidgetState>> _shakeKeys = [];
   late final List<GlobalKey<AnimatorWidgetState>> _bounceKeys = [];
 
   final _wordService = WordService();
 
+  Stats get stats => _stats;
+  Settings get settings => _settings;
   int get _gameNumber => DateTime.now().difference(baseDate).inDays;
 
   void updateBoard(List<Letter> attempt) {
     for (var i = 0; i < attempt.length; i++) {
       var offset = i + ((totalTries - _context.remainingTries) * rowLength);
-      _context.board[offset] = attempt[i];
+      _context.board.tiles[offset] = attempt[i];
     }
   }
 
@@ -62,7 +69,8 @@ class Flurdle {
     }
 
     var context = await ContextService().loadContext();
-    var stats = await StatsService().loadStats();
+    _stats = await _statsService.loadStats();
+    _settings = await SettingsService().load();
 
     await _wordService.init();
     if (context == null) {
@@ -71,26 +79,16 @@ class Flurdle {
       if (_isToday(context.lastPlayed)) {
         _context = context;
       } else {
-        _initContext(theme: context.theme);
+        _initContext();
       }
     }
-    _context.stats = stats;
     return true;
   }
 
-  void _initContext({ThemeMode theme = ThemeMode.system}) {
-    _context = Context(
-        List.filled(boardSize, Letter(0, '', GameColor.unset), growable: false),
-        KeyboardService.init().keys,
-        '',
-        '',
-        [],
-        TurnResult.unset,
-        totalTries,
-        'Good Luck!',
-        0,
-        DateTime.now(),
-        theme);
+  void _initContext() {
+    var board = Board(List.filled(boardSize, Letter(0, '', GameColor.unset), growable: false));
+    _context = Context(board, KeyboardService.init().keys, '', '', [], TurnResult.unset, totalTries,
+        'Good Luck!', 0, DateTime.now());
     _context.answer = _wordService.getWordOfTheDay(baseDate);
   }
 
@@ -132,32 +130,14 @@ class Flurdle {
       if (i > 0 && i % rowLength == 0) {
         board += '\n';
       }
-      board += _getTileBlock(_context.board[i].color);
+      board += _getTileBlock(_context.board.tiles[i].color);
     }
     return board;
   }
 
-  void _updateStats(bool won) {
-    if (won) {
-      var index = (_context.remainingTries - totalTries).abs();
-      _context.stats.guessDistribution[index] += 1;
-      _context.stats.lastGuess = index + 1;
-      _context.stats.won += 1;
-      _context.stats.streak.current += 1;
-      if (_context.stats.streak.current > _context.stats.streak.max) {
-        _context.stats.streak.max = _context.stats.streak.current;
-      }
-      _context.stats.lastBoard = _getShareableBoard(index);
-    } else {
-      _context.stats.lost += 1;
-      _context.stats.streak.current = 0;
-      _context.stats.lastGuess = -1;
-    }
-    _context.stats.gameNumber = _gameNumber;
-
-    Future.delayed(Duration.zero, () async {
-      await StatsService().saveStats(_context.stats);
-    });
+  Future<Stats> _updateStats(bool won, int remainingTries) async {
+    return await _statsService.updateStats(
+        _stats, won, (remainingTries - totalTries).abs(), _getShareableBoard, _gameNumber);
   }
 
   void evaluateTurn(String letter) {
@@ -185,7 +165,7 @@ class Flurdle {
     } else {
       if (_context.guess.length < rowLength) {
         _context.guess = _context.guess + letter;
-        _context.board[_context.currentIndex++] = Letter(0, letter, GameColor.unset);
+        _context.board.tiles[_context.currentIndex++] = Letter(0, letter, GameColor.unset);
       }
     }
   }
@@ -194,11 +174,11 @@ class Flurdle {
   List<GlobalKey<AnimatorWidgetState>> get shakeKeys => _shakeKeys;
   List<GlobalKey<AnimatorWidgetState>> get bounceKeys => _bounceKeys;
 
-  void updateAfterSuccessfulGuess() {
+  Future updateAfterSuccessfulGuess() async {
     _context.keys = _updateKeys(_context.keys, _context.attempt);
     var won = didWin(_context.attempt);
     if (won || _context.remainingTries == 1) {
-      _updateStats(won);
+      _stats = await _updateStats(won, _context.remainingTries);
     }
     var remaining = _context.remainingTries - 1;
     _context.guess = '';

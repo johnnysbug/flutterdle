@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 enum GameColor {
   unset,
   none,
@@ -8,6 +6,24 @@ enum GameColor {
 }
 
 enum TurnResult { unset, successful, unsuccessful, partial }
+
+class Settings {
+  bool isDarkMode;
+  bool isHardMode;
+
+  Settings(this.isDarkMode, this.isHardMode);
+
+  Settings.fromJson(Map<String, dynamic> json)
+      : isDarkMode = json['isDarkMode'],
+        isHardMode = json['isHardMode'];
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['isDarkMode'] = isDarkMode;
+    data['isHardMode'] = isHardMode;
+    return data;
+  }
+}
 
 class Letter {
   int index;
@@ -30,8 +46,28 @@ class Letter {
   }
 }
 
+class Board {
+  List<Letter> tiles;
+
+  Board(this.tiles);
+
+  factory Board.fromJson(Map<String, dynamic> json) {
+    var tiles = <Letter>[];
+    json['tiles'].forEach((tile) {
+      tiles.add(Letter.fromJson(tile));
+    });
+    return Board(tiles);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['tiles'] = tiles;
+    return data;
+  }
+}
+
 class Context {
-  List<Letter> board;
+  Board board;
   List<List<Letter>> keys;
   String answer;
   String guess;
@@ -41,17 +77,12 @@ class Context {
   String message;
   int currentIndex;
   DateTime? lastPlayed;
-  ThemeMode theme;
-  late Stats stats;
 
   Context(this.board, this.keys, this.answer, this.guess, this.attempt, this.turnResult,
-      this.remainingTries, this.message, this.currentIndex, this.lastPlayed, this.theme);
+      this.remainingTries, this.message, this.currentIndex, this.lastPlayed);
 
   factory Context.fromJson(Map<String, dynamic> json) {
-    var board = <Letter>[];
-    json['board'].forEach((tile) {
-      board.add(Letter.fromJson(tile));
-    });
+    var board = Board.fromJson(json['board']);
     var keys = <List<Letter>>[];
     if (json['keys'] != null) {
       json['keys'].forEach((row) {
@@ -73,11 +104,9 @@ class Context {
     String message = json['message'];
     int currentIndex = json['currentIndex'];
     DateTime? lastPlayed = json['lastPlayed'] != null ? DateTime.parse(json['lastPlayed']) : null;
-    ThemeMode theme =
-        json['theme'] != null ? ThemeMode.values.byName(json['theme']) : ThemeMode.system;
 
     return Context(board, keys, answer, guess, attempt, turnResult, remainingTries, message,
-        currentIndex, lastPlayed, theme);
+        currentIndex, lastPlayed);
   }
 
   Map<String, dynamic> toJson() {
@@ -92,7 +121,6 @@ class Context {
     data['message'] = message;
     data['currentIndex'] = currentIndex;
     data['lastPlayed'] = (lastPlayed ?? DateTime.now()).toIso8601String();
-    data['theme'] = theme.name;
     return data;
   }
 }
@@ -120,9 +148,7 @@ class Stats {
 
   int get played => guessDistribution.reduce((value, g) => value + g) + lost;
 
-  int get percentWon => played == 0 
-    ? 0 
-    : (won / played * 100).round();
+  int get percentWon => played == 0 ? 0 : (won / played * 100).round();
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};

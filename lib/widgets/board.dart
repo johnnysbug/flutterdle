@@ -5,30 +5,29 @@ import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutterdle/domain.dart';
 import 'package:flutterdle/helpers/tile_builder.dart';
 
-class Board extends StatelessWidget {
+class BoardWidget extends StatelessWidget {
   final List<GlobalKey<AnimatorWidgetState>> _shakeKeys;
   final List<GlobalKey<AnimatorWidgetState>> _bounceKeys;
 
   final Context _context;
   final int _rowLength;
 
-  const Board(this._context, this._rowLength, this._shakeKeys, this._bounceKeys, {Key? key}) : super(key: key);
+  const BoardWidget(this._context, this._rowLength, this._shakeKeys, this._bounceKeys, {Key? key})
+      : super(key: key);
 
   List<Widget> _buildRows() {
     final rows = <Widget>[];
-    var board = _context.board;
+    var tiles = _context.board.tiles;
 
     var i = 0;
-    for (var x = 0; x < board.length / _rowLength; x++) {
+    for (var x = 0; x < tiles.length / _rowLength; x++) {
       final cells = <Widget>[];
       for (var y = 0; y < _rowLength; y++) {
         cells.add(Flexible(
           child: Bounce(
             key: _bounceKeys[i],
-            preferences: const AnimationPreferences(
-              autoPlay: AnimationPlayStates.None
-            ),
-            child: _buildFlipAnimation(board[i]),
+            preferences: const AnimationPreferences(autoPlay: AnimationPlayStates.None),
+            child: _buildFlipAnimation(tiles[i]),
           ),
         ));
         i++;
@@ -95,10 +94,9 @@ class Board extends StatelessWidget {
                       _context.message,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSecondary,
-                        fontWeight: FontWeight.bold, 
-                        fontSize: 20
-                      ),
+                          color: Theme.of(context).colorScheme.onSecondary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20),
                     ),
                   )),
             )

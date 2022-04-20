@@ -1,13 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutterdle/domain.dart';
+import 'package:flutterdle/services/settings_service.dart';
 
 class SettingsWidget extends StatefulWidget {
   final Function close;
   final StreamController streamController;
-  final bool isDarkTheme;
+  final Settings _settings;
 
-  const SettingsWidget(this.close, this.streamController, this.isDarkTheme, {Key? key})
+  const SettingsWidget(this.close, this.streamController, this._settings, {Key? key})
       : super(key: key);
 
   @override
@@ -15,14 +17,6 @@ class SettingsWidget extends StatefulWidget {
 }
 
 class _SettingsState extends State<SettingsWidget> {
-  late bool _isDarkTheme;
-
-  @override
-  void initState() {
-    super.initState();
-    _isDarkTheme = widget.isDarkTheme;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -55,32 +49,48 @@ class _SettingsState extends State<SettingsWidget> {
                                 fontSize: 18,
                               ),
                             )),
-                            Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 20, 10, 5),
-                                child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Dark Theme",
+                            Expanded(
+                              child: ListView(
+                                  children: ListTile.divideTiles(
+                                context: context,
+                                tiles: [
+                                  SwitchListTile(
+                                    subtitle: const Text(
+                                        "Any revealed hints must be used in subsequent guesses"),
+                                    title: const Text("Hard Mode",
                                         style: TextStyle(
                                           fontSize: 18,
-                                        ),
-                                      ),
-                                      const Spacer(),
-                                      Switch(
-                                        value: _isDarkTheme,
-                                        onChanged: (value) {
-                                          widget.streamController
-                                              .add(value ? ThemeMode.dark : ThemeMode.light);
-                                          setState(() {
-                                            _isDarkTheme = value;
-                                          });
+                                        )),
+                                    value: widget._settings.isHardMode,
+                                    onChanged: (bool value) {
+                                      widget._settings.isHardMode = value;
+                                      SettingsService().save(widget._settings);
+                                      widget.streamController.add(widget._settings);
+                                      setState(() {
+                                        widget._settings.isHardMode = value;
+                                      });
+                                    },
+                                  ),
+                                  SwitchListTile(
+                                    title: const Text(
+                                      "Dark Mode",
+                                    ),
+                                    
+                                    value: widget._settings.isDarkMode,
+                                    onChanged: (bool value) {
+                                      widget._settings.isDarkMode = value;
+                                      SettingsService().save(widget._settings);
+                                      widget.streamController.add(widget._settings);
+                                      setState(
+                                        () {
+                                          widget._settings.isDarkMode = value;
                                         },
-                                        activeTrackColor: Colors.lightGreenAccent,
-                                        activeColor: Colors.green,
-                                      )
-                                    ]))
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ).toList()),
+                            ),
                           ])))
                 ]))));
   }
