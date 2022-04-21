@@ -17,9 +17,8 @@ I tried to implement the majority of features seen in the actual game(https://ww
 - tracks game stats and persists them to the device (tested on iOS and Android, but may work in Chrome as well)
 - saves game context during play
 - shows a count down timer until next word generates on stats screen
-
-### TODO:
-- implement hard mode
+- includes hard mode
+- includes high constrast setting
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/1800439/160267131-11238e51-d079-4e7f-9f86-fdeddca1cfcd.gif" width="25%" />
