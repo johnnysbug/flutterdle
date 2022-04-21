@@ -82,7 +82,17 @@ class Context {
       this.remainingTries, this.message, this.currentIndex, this.lastPlayed);
 
   factory Context.fromJson(Map<String, dynamic> json) {
-    var board = Board.fromJson(json['board']);
+    var isPrevious = json['board'] is List;
+    Board board;
+    if (isPrevious) {
+      var tiles = <Letter>[];
+      json['board'].forEach((letter) {
+        tiles.add(Letter.fromJson(letter));
+      });
+      board = Board(tiles);
+    } else {
+      board = Board.fromJson(json['board']);
+    }
     var keys = <List<Letter>>[];
     if (json['keys'] != null) {
       json['keys'].forEach((row) {

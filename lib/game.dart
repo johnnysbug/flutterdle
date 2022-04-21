@@ -16,7 +16,7 @@ class Flutterdle {
 
   static final StatsService _statsService = StatsService();
 
-  final baseDate = DateTime(2021, DateTime.june, 19);
+  final _baseDate = DateTime(2021, DateTime.june, 19);
 
   late Context _context;
   late Stats _stats;
@@ -26,9 +26,11 @@ class Flutterdle {
 
   final _wordService = WordService();
 
+  bool isEvaluating = false;
+
   Stats get stats => _stats;
   Settings get settings => _settings;
-  int get _gameNumber => DateTime.now().difference(baseDate).inDays;
+  int get _gameNumber => DateTime.now().difference(_baseDate).inDays;
 
   void updateBoard(List<Letter> attempt) {
     for (var i = 0; i < attempt.length; i++) {
@@ -89,10 +91,11 @@ class Flutterdle {
     var board = Board(List.filled(boardSize, Letter(0, '', GameColor.unset), growable: false));
     _context = Context(board, KeyboardService.init().keys, '', '', [], TurnResult.unset, totalTries,
         'Good Luck!', 0, DateTime.now());
-    _context.answer = _wordService.getWordOfTheDay(baseDate);
+    _context.answer = _wordService.getWordOfTheDay(_baseDate);
   }
 
-  bool didWin(List<Letter> attempt) => attempt.every((l) => l.color == GameColor.exact);
+  bool didWin(List<Letter> attempt) =>
+      attempt.isNotEmpty && attempt.every((l) => l.color == GameColor.exact);
 
   String _winningMessage(int remainingTries) {
     switch (remainingTries) {
@@ -141,6 +144,7 @@ class Flutterdle {
   }
 
   void evaluateTurn(String letter) {
+    isEvaluating = true;
     _context.turnResult = TurnResult.partial;
     if (KeyboardService.isEnter(letter)) {
       if (!_wordService.isLongEnough(_context.guess)) {
@@ -175,21 +179,23 @@ class Flutterdle {
   List<GlobalKey<AnimatorWidgetState>> get bounceKeys => _bounceKeys;
 
   Future updateAfterSuccessfulGuess() async {
-    _context.keys = _updateKeys(_context.keys, _context.attempt);
-    var won = didWin(_context.attempt);
-    if (won || _context.remainingTries == 1) {
-      _stats = await _updateStats(won, _context.remainingTries);
+    if (_context.turnResult == TurnResult.successful) {
+      _context.keys = _updateKeys(_context.keys, _context.attempt);
+      var won = didWin(_context.attempt);
+      if (won || _context.remainingTries == 1) {
+        _stats = await _updateStats(won, _context.remainingTries);
+      }
+      var remaining = _context.remainingTries - 1;
+      _context.guess = '';
+      _context.attempt = [];
+      _context.remainingTries = won ? 0 : remaining;
+      _context.message = won
+          ? _winningMessage(remaining)
+          : remaining == 0
+              ? 'Sorry, you lost'
+              : '';
+      persist();
     }
-    var remaining = _context.remainingTries - 1;
-    _context.guess = '';
-    _context.attempt = [];
-    _context.remainingTries = won ? 0 : remaining;
-    _context.message = won
-        ? _winningMessage(remaining)
-        : remaining == 0
-            ? 'Sorry, you lost'
-            : '';
-    persist();
   }
 
   void persist() {

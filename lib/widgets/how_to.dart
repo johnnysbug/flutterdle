@@ -50,7 +50,7 @@ class HowTo extends StatelessWidget {
                                     text: 'Guess the ',
                                     children: [
                                       TextSpan(
-                                          text: 'FLURDLE',
+                                          text: 'FLUTTERDLE',
                                           style: TextStyle(fontWeight: FontWeight.bold)),
                                       TextSpan(text: ' in six tries.')
                                     ],
@@ -217,7 +217,7 @@ class HowTo extends StatelessWidget {
                                     text: 'A new ',
                                     children: [
                                       TextSpan(
-                                          text: 'FLURDLE',
+                                          text: 'FLUTTERDLE',
                                           style: TextStyle(fontWeight: FontWeight.bold)),
                                       TextSpan(text: ' is available each day.')
                                     ],

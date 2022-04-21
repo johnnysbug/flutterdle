@@ -21,7 +21,7 @@ class StatsWidget extends StatefulWidget {
 }
 
 class _StatsState extends State<StatsWidget> {
-  int _getFlex(int number, int total) => (number / (number + (total - number)) * 10).ceil();
+  int _getFlex(int number, int total) => total == 0 ? 0 : (number / (number + (total - number)) * 10).ceil();
 
   Future<Stats> get _stats => Future.microtask(() => StatsService().loadStats());
 
@@ -36,14 +36,14 @@ class _StatsState extends State<StatsWidget> {
                   fit: BoxFit.contain,
                   child: SizedBox(
                       width: 500,
-                      height: 500,
+                      height: 520,
                       child: Stack(children: [
                         Positioned(
                             top: 0,
                             left: 0,
                             child: SizedBox(
                               width: 410,
-                              height: 500,
+                              height: 520,
                               child: Column(children: [
                                 Row(
                                   children: [
@@ -181,61 +181,66 @@ class _StatsState extends State<StatsWidget> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(20.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(right: 16),
+                                  child: IntrinsicHeight(
+                                    child: Row(
+                                      children: [
+                                        Expanded(
                                           child: Column(
                                             children: [
                                               const Center(
                                                   child: Text(
-                                                "NEXT FLURDLE",
+                                                "NEXT FLUTTERDLE",
                                                 style: TextStyle(
-                                                  fontSize: 18,
+                                                  fontSize: 16,
                                                 ),
                                               )),
                                               CountdownWidget(widget.newGame),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(right: 16, left: 16),
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(primary: Colors.green),
-                                            onPressed: () {
-                                              var guesses = widget.stats.lastGuess == -1
-                                                  ? 'X'
-                                                  : widget.stats.lastGuess;
-                                              Share.share(
-                                                  'Flurdle ${widget.stats.gameNumber} $guesses/6\n${widget.stats.lastBoard}',
-                                                  subject: 'Flurdle $guesses/6');
-                                            },
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: const [
-                                                Text('SHARE',
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.white,
-                                                      fontSize: 18,
-                                                    )),
-                                                SizedBox(
-                                                  width: 5,
-                                                ),
-                                                Icon(
-                                                  Icons.share,
-                                                  color: Colors.white,
-                                                  size: 24.0,
-                                                ),
-                                              ],
+                                        VerticalDivider(
+                                          color: Theme.of(context).colorScheme.secondary,
+                                          width: 2,
+                                          indent: 2,
+                                          endIndent: 2,
+                                          thickness: 2,),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(right: 16, left: 16),
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(primary: Colors.green),
+                                              onPressed: () {
+                                                var guesses = widget.stats.lastGuess == -1
+                                                    ? 'X'
+                                                    : widget.stats.lastGuess;
+                                                Share.share(
+                                                    'Flutterdle ${widget.stats.gameNumber} $guesses/6\n${widget.stats.lastBoard}',
+                                                    subject: 'Flutterdle $guesses/6');
+                                              },
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: const [
+                                                  Text('SHARE',
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.white,
+                                                        fontSize: 18,
+                                                      )),
+                                                  SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  Icon(
+                                                    Icons.share,
+                                                    color: Colors.white,
+                                                    size: 24.0,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 )
                               ]),

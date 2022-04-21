@@ -39,12 +39,12 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flurdle',
+      title: 'Flutterdle',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       themeMode: _appTheme,
       darkTheme: AppTheme.darkTheme,
-      home: MyHomePage(_appTheme, _streamController, title: 'Flurdle'),
+      home: MyHomePage(_appTheme, _streamController, title: 'Flutterdle'),
     );
   }
 }
@@ -104,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onKeyPressed(String val) {
-    if (_game.context.remainingTries == 0) {
+    if (_game.context.remainingTries == 0 || _game.isEvaluating) {
       return;
     }
     setState(() {
@@ -112,6 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if (_game.context.turnResult == TurnResult.unsuccessful) {
         var index = (_game.context.remainingTries - Flutterdle.totalTries).abs();
         _game.shakeKeys[index].currentState?.forward();
+        _game.isEvaluating = false;
       } else if (_game.context.turnResult == TurnResult.successful) {
         for (var i = 0; i < _game.context.attempt.length; i++) {
           var offset =
@@ -141,8 +142,11 @@ class _MyHomePageState extends State<MyHomePage> {
           setState(() {
             _game.updateAfterSuccessfulGuess().then((_) => setState(() {}));
             _resetMessage();
+            _game.isEvaluating = false;
           });
         });
+      } else {
+        _game.isEvaluating = false;
       }
     });
     _resetMessage();
@@ -197,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     centerTitle: true,
                     actions: <Widget>[
                       Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
+                          padding: const EdgeInsets.only(left: 16, right: 16.0),
                           child: GestureDetector(
                             onTap: () => _openStats(),
                             child: const Icon(
