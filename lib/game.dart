@@ -153,7 +153,17 @@ class Flutterdle {
       } else if (_wordService.isValidGuess(_context.guess)) {
         _context.attempt =
             MatchingService.matches(_context.guess.toLowerCase(), _context.answer).toList();
-        _context.turnResult = TurnResult.successful;
+        if (_settings.isHardMode) {
+          var unusedLetter = _checkHardMode();
+          if (unusedLetter.isNotEmpty) {
+            _context.message = 'Guess must contain $unusedLetter';
+            _context.turnResult = TurnResult.unsuccessful;
+          } else {
+            _context.turnResult = TurnResult.successful;
+          }
+        } else {
+          _context.turnResult = TurnResult.successful;
+        }
       } else {
         _context.message = 'Not in Word list';
         _context.turnResult = TurnResult.unsuccessful;
@@ -202,5 +212,23 @@ class Flutterdle {
     Future.delayed(Duration.zero, () async {
       await ContextService().saveContext(_context);
     });
+  }
+
+  String _checkHardMode() {
+    var previousMatches = _context.board.tiles
+        .where((l) => l.color == GameColor.exact || l.color == GameColor.partial)
+        .map((l) => l.value);
+    var currentMatches = _context.attempt
+        .where((l) => l.color == GameColor.exact || l.color == GameColor.partial)
+        .map((l) => l.value);
+
+    if (previousMatches.isNotEmpty) {
+      for (var i = 0; i < previousMatches.length; i++) {
+        if (!currentMatches.contains(previousMatches.elementAt(i))) {
+          return previousMatches.elementAt(i);
+        }
+      }
+    }
+    return '';
   }
 }
