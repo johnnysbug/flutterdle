@@ -74,6 +74,9 @@ class _SettingsState extends State<SettingsWidget> {
                                   SwitchListTile(
                                     title: const Text(
                                       "Dark Mode",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                        )
                                     ),
                                     
                                     value: widget._settings.isDarkMode,
@@ -86,6 +89,23 @@ class _SettingsState extends State<SettingsWidget> {
                                           widget._settings.isDarkMode = value;
                                         },
                                       );
+                                    },
+                                  ),
+                                  SwitchListTile(
+                                    subtitle: const Text(
+                                        "For improved color vision"),
+                                    title: const Text("High Contrast Mode",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        )),
+                                    value: widget._settings.isHighContrast,
+                                    onChanged: (bool value) {
+                                      widget._settings.isHighContrast = value;
+                                      SettingsService().save(widget._settings);
+                                      widget.streamController.add(widget._settings);
+                                      setState(() {
+                                        widget._settings.isHighContrast = value;
+                                      });
                                     },
                                   ),
                                 ],

@@ -120,9 +120,9 @@ class Flutterdle {
       case GameColor.none:
         return '⬛️';
       case GameColor.partial:
-        return '🟨';
+        return _settings.isHighContrast ? '🟧' : '🟨';
       case GameColor.exact:
-        return '🟩';
+        return _settings.isHighContrast ? '🟦' : '🟩';
     }
   }
 

@@ -10,17 +10,20 @@ enum TurnResult { unset, successful, unsuccessful, partial }
 class Settings {
   bool isDarkMode;
   bool isHardMode;
+  bool isHighContrast;
 
-  Settings(this.isDarkMode, this.isHardMode);
+  Settings(this.isDarkMode, this.isHardMode, this.isHighContrast);
 
   Settings.fromJson(Map<String, dynamic> json)
       : isDarkMode = json['isDarkMode'],
-        isHardMode = json['isHardMode'];
+        isHardMode = json['isHardMode'],
+        isHighContrast = json['isHighConstrat'] ?? false;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['isDarkMode'] = isDarkMode;
     data['isHardMode'] = isHardMode;
+    data['isHighContrast'] = isHighContrast;
     return data;
   }
 }

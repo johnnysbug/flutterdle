@@ -6,13 +6,16 @@ import 'package:flutterdle/widgets/countdown.dart';
 import 'package:share_plus/share_plus.dart';
 
 class StatsWidget extends StatefulWidget {
-  const StatsWidget(this._stats, this._close, this._newGame, {Key? key}) : super(key: key);
+  const StatsWidget(this._stats, this._settings, this._close, this._newGame, {Key? key}) : super(key: key);
 
   final Stats _stats;
+  final Settings _settings;
   final Function _close;
   final Function _newGame;
 
   Stats get stats => _stats;
+  Settings get settings => _settings;
+  
   Function get close => _close;
   Function get newGame => _newGame;
 
@@ -208,7 +211,7 @@ class _StatsState extends State<StatsWidget> {
                                           child: Padding(
                                             padding: const EdgeInsets.only(right: 16, left: 16),
                                             child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(primary: Colors.green),
+                                              style: ElevatedButton.styleFrom(primary: widget.settings.isHighContrast ? Colors.orange : Colors.green),
                                               onPressed: () {
                                                 var guesses = widget.stats.lastGuess == -1
                                                     ? 'X'
@@ -286,7 +289,11 @@ class _StatsState extends State<StatsWidget> {
           Expanded(
             flex: _getFlex(completed, total),
             child: Container(
-                color: isCurrent ? Colors.green : const Color.fromARGB(255, 90, 87, 87),
+                color: isCurrent 
+                  ? widget.settings.isHighContrast 
+                    ? Colors.orange 
+                    : Colors.green 
+                  : const Color.fromARGB(255, 90, 87, 87),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 4, right: 4),
                   child: Text(

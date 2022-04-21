@@ -3,12 +3,12 @@ import 'package:flutterdle/domain.dart';
 
 class TileBuilder {
   
-  static Color _toColor(GameColor color) {
+  static Color _toColor(GameColor color, Settings settings) {
     switch (color) {
       case GameColor.exact:
-        return Colors.green;
+        return settings.isHighContrast ? Colors.orange : Colors.green;
       case GameColor.partial:
-        return const Color.fromARGB(255, 207, 187, 98);
+        return settings.isHighContrast ? Colors.blue : const Color.fromARGB(255, 207, 187, 98);
       case GameColor.none:
         return const Color.fromARGB(255, 90, 87, 87);
       case GameColor.unset:
@@ -16,7 +16,7 @@ class TileBuilder {
     }
   }
 
-  static Widget build(String letter, GameColor color) {
+  static Widget build(String letter, GameColor color, Settings settings) {
     return Padding(
       key: ValueKey(color == GameColor.unset),
       padding: const EdgeInsets.all(2.0),
@@ -29,7 +29,7 @@ class TileBuilder {
                 color: Colors.grey.shade800,
               ),
               borderRadius: const BorderRadius.all(Radius.circular(8)),
-              color: _toColor(color)),
+              color: _toColor(color, settings)),
           child: FittedBox(
               fit: BoxFit.contain,
               child: Text(

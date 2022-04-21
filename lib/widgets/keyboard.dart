@@ -4,15 +4,16 @@ import 'package:flutterdle/domain.dart';
 class Keyboard extends StatelessWidget {
   final List<List<Letter>> _keys;
   final ValueSetter<String> _onKeyPressed;
+  final Settings _settings;
 
-  const Keyboard(this._keys, this._onKeyPressed, {Key? key}) : super(key: key);
+  const Keyboard(this._keys, this._settings, this._onKeyPressed, {Key? key}) : super(key: key);
 
   Color _toColor(GameColor color) {
     switch (color) {
       case GameColor.exact:
-        return Colors.green;
+        return _settings.isHighContrast ? Colors.orange : Colors.green;
       case GameColor.partial:
-        return const Color.fromARGB(255, 207, 187, 98);
+        return _settings.isHighContrast ? Colors.blue : const Color.fromARGB(255, 207, 187, 98);
       case GameColor.none:
         return const Color.fromARGB(255, 90, 87, 87);
       case GameColor.unset:
@@ -42,8 +43,8 @@ class Keyboard extends StatelessWidget {
                 letter,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: letter.length > 1 ? 10 : 18, 
-                  color: color != GameColor.unset ? Colors.white : null),
+                    fontSize: letter.length > 1 ? 10 : 18,
+                    color: color != GameColor.unset ? Colors.white : null),
               )),
         ),
       ),

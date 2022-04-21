@@ -8,11 +8,14 @@ import 'package:flutterdle/helpers/tile_builder.dart';
 class BoardWidget extends StatelessWidget {
   final List<GlobalKey<AnimatorWidgetState>> _shakeKeys;
   final List<GlobalKey<AnimatorWidgetState>> _bounceKeys;
+  final Settings _settings;
 
   final Context _context;
   final int _rowLength;
 
-  const BoardWidget(this._context, this._rowLength, this._shakeKeys, this._bounceKeys, {Key? key})
+  const BoardWidget(
+      this._context, this._rowLength, this._shakeKeys, this._bounceKeys, this._settings,
+      {Key? key})
       : super(key: key);
 
   List<Widget> _buildRows() {
@@ -52,7 +55,7 @@ class BoardWidget extends StatelessWidget {
       transitionBuilder: _transitionBuilder,
       layoutBuilder: (widget, list) =>
           Stack(children: widget != null ? [widget, ...list] : [...list]),
-      child: TileBuilder.build(letter.value, letter.color),
+      child: TileBuilder.build(letter.value, letter.color, _settings),
       switchInCurve: Curves.easeInBack,
       switchOutCurve: Curves.easeInBack.flipped,
     );

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutterdle/domain.dart' as stats;
+import 'package:flutterdle/domain.dart';
 import 'package:flutterdle/helpers/tile_builder.dart';
 
 class HowTo extends StatelessWidget {
-  const HowTo(this._close, {Key? key}) : super(key: key);
+  const HowTo(this._close, this._settings, {Key? key}) : super(key: key);
 
   final Function _close;
+  final Settings _settings;
 
   @override
   Widget build(BuildContext context) {
@@ -101,11 +103,11 @@ class HowTo extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 direction: Axis.horizontal,
                                 children: [
-                                  Flexible(child: TileBuilder.build('W', stats.GameColor.exact)),
-                                  Flexible(child: TileBuilder.build('E', stats.GameColor.unset)),
-                                  Flexible(child: TileBuilder.build('A', stats.GameColor.unset)),
-                                  Flexible(child: TileBuilder.build('R', stats.GameColor.unset)),
-                                  Flexible(child: TileBuilder.build('Y', stats.GameColor.unset)),
+                                  Flexible(child: TileBuilder.build('W', stats.GameColor.exact, _settings)),
+                                  Flexible(child: TileBuilder.build('E', stats.GameColor.unset, _settings)),
+                                  Flexible(child: TileBuilder.build('A', stats.GameColor.unset, _settings)),
+                                  Flexible(child: TileBuilder.build('R', stats.GameColor.unset, _settings)),
+                                  Flexible(child: TileBuilder.build('Y', stats.GameColor.unset, _settings)),
                                 ],
                               ),
                             ),
@@ -139,11 +141,11 @@ class HowTo extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 direction: Axis.horizontal,
                                 children: [
-                                  Flexible(child: TileBuilder.build('P', stats.GameColor.unset)),
-                                  Flexible(child: TileBuilder.build('I', stats.GameColor.partial)),
-                                  Flexible(child: TileBuilder.build('L', stats.GameColor.unset)),
-                                  Flexible(child: TileBuilder.build('L', stats.GameColor.unset)),
-                                  Flexible(child: TileBuilder.build('S', stats.GameColor.unset)),
+                                  Flexible(child: TileBuilder.build('P', stats.GameColor.unset, _settings)),
+                                  Flexible(child: TileBuilder.build('I', stats.GameColor.partial, _settings)),
+                                  Flexible(child: TileBuilder.build('L', stats.GameColor.unset, _settings)),
+                                  Flexible(child: TileBuilder.build('L', stats.GameColor.unset, _settings)),
+                                  Flexible(child: TileBuilder.build('S', stats.GameColor.unset, _settings)),
                                 ],
                               ),
                             ),
@@ -177,11 +179,11 @@ class HowTo extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 direction: Axis.horizontal,
                                 children: [
-                                  Flexible(child: TileBuilder.build('V', stats.GameColor.unset)),
-                                  Flexible(child: TileBuilder.build('A', stats.GameColor.unset)),
-                                  Flexible(child: TileBuilder.build('G', stats.GameColor.unset)),
-                                  Flexible(child: TileBuilder.build('U', stats.GameColor.none)),
-                                  Flexible(child: TileBuilder.build('E', stats.GameColor.unset)),
+                                  Flexible(child: TileBuilder.build('V', stats.GameColor.unset, _settings)),
+                                  Flexible(child: TileBuilder.build('A', stats.GameColor.unset, _settings)),
+                                  Flexible(child: TileBuilder.build('G', stats.GameColor.unset, _settings)),
+                                  Flexible(child: TileBuilder.build('U', stats.GameColor.none, _settings)),
+                                  Flexible(child: TileBuilder.build('E', stats.GameColor.unset, _settings)),
                                 ],
                               ),
                             ),

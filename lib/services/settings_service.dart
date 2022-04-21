@@ -11,7 +11,7 @@ class SettingsService {
     final jsonString = exists ? await File("${directory.path}/settings.json").readAsString() : '';
 
     if (jsonString.isEmpty) {
-      return Settings(true, false);
+      return Settings(true, false, false);
     }
     final map = json.decode(jsonString);
     return Settings.fromJson(map);

@@ -232,16 +232,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                       top: 25,
                                       left: 25,
                                       child: BoardWidget(_game.context, Flutterdle.rowLength,
-                                          _game.shakeKeys, _game.bounceKeys)),
+                                          _game.shakeKeys, _game.bounceKeys, _game.settings)),
                                   Positioned(
                                       top: 470,
                                       left: 0,
-                                      child: Keyboard(_game.context.keys, _onKeyPressed)),
+                                      child: Keyboard(_game.context.keys, _game.settings, _onKeyPressed)),
                                   if (_showStats) ...[
                                     Positioned(
                                         top: 50,
                                         left: 0,
-                                        child: StatsWidget(_game.stats, _closeStats, _newGame))
+                                        child: StatsWidget(_game.stats, _game.settings, _closeStats, _newGame))
                                   ],
                                   if (_showSettings) ...[
                                     Positioned(
@@ -252,7 +252,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ]
                                 ])))),
                   ])),
-              if (_showHelp) ...[SafeArea(child: HowTo(_closeHelp))]
+              if (_showHelp) ...[SafeArea(child: HowTo(_closeHelp, _game.settings))]
             ];
           } else {
             children = [
