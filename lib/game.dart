@@ -202,7 +202,7 @@ class Flutterdle {
       _context.message = won
           ? _winningMessage(remaining)
           : remaining == 0
-              ? 'Sorry, you lost'
+              ? _context.answer
               : '';
       persist();
     }
