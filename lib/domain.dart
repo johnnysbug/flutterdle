@@ -53,8 +53,8 @@ class Letter {
     return value == Letter.empty
         ? 'Empty'
         : color == GameColor.unset
-            ? value.toUpperCase()
-            : '${value.toUpperCase()} ${_match()}';
+            ? '${value.toUpperCase()}.'
+            : '${value.toUpperCase()}. ${_match()}';
   }
 
   set semanticsLabel(String value) {}
