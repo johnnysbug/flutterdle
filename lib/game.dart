@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutterdle/domain.dart';
 import 'package:flutterdle/services/context_service.dart';
@@ -30,7 +31,7 @@ class Flutterdle {
 
   Stats get stats => _stats;
   Settings get settings => _settings;
-  int get _gameNumber => DateTime.now().difference(_baseDate).inDays;
+  int get gameNumber => DateTime.now().difference(_baseDate).inDays;
 
   void updateBoard(List<Letter> attempt) {
     for (var i = 0; i < attempt.length; i++) {
@@ -44,7 +45,7 @@ class Flutterdle {
       for (var x = 0; x < keys.length; x++) {
         for (var y = 0; y < keys[x].length; y++) {
           if (keys[x][y].value == guess[i].value && keys[x][y].color.index < guess[i].color.index) {
-            keys[x][y] = guess[i];
+            keys[x][y] = Letter(value: guess[i].value, color: guess[i].color, isKey: true);
           }
         }
       }
@@ -88,9 +89,10 @@ class Flutterdle {
   }
 
   void _initContext() {
-    var board = Board(List.filled(boardSize, Letter(0, '', GameColor.unset), growable: false));
+    var board = Board(List.filled(boardSize, Letter(), growable: false));
     _context = Context(board, KeyboardService.init().keys, '', '', [], TurnResult.unset, totalTries,
         'Good Luck!', 0, DateTime.now());
+    SemanticsService.announce(_context.message, TextDirection.ltr);
     _context.answer = _wordService.getWordOfTheDay(_baseDate);
   }
 
@@ -140,7 +142,7 @@ class Flutterdle {
 
   Future<Stats> _updateStats(bool won, int remainingTries) async {
     return await _statsService.updateStats(
-        _stats, won, (remainingTries - totalTries).abs(), _getShareableBoard, _gameNumber);
+        _stats, won, (remainingTries - totalTries).abs(), _getShareableBoard, gameNumber);
   }
 
   void evaluateTurn(String letter) {
@@ -149,6 +151,7 @@ class Flutterdle {
     if (KeyboardService.isEnter(letter)) {
       if (!_wordService.isLongEnough(_context.guess)) {
         _context.message = 'Not enough letters';
+        SemanticsService.announce(_context.message, TextDirection.ltr);
         _context.turnResult = TurnResult.unsuccessful;
       } else if (_wordService.isValidGuess(_context.guess)) {
         _context.attempt =
@@ -157,29 +160,37 @@ class Flutterdle {
           var unusedLetter = _checkHardMode();
           if (unusedLetter.isNotEmpty) {
             _context.message = 'Guess must contain $unusedLetter';
+            SemanticsService.announce(_context.message, TextDirection.ltr);
             _context.turnResult = TurnResult.unsuccessful;
           } else {
+            SemanticsService.announce(
+                'Your guess ${_context.guess} was accepted', TextDirection.ltr);
             _context.turnResult = TurnResult.successful;
           }
         } else {
+          SemanticsService.announce('Your guess ${_context.guess} was accepted', TextDirection.ltr);
           _context.turnResult = TurnResult.successful;
         }
       } else {
         _context.message = 'Not in Word list';
+        SemanticsService.announce('${_context.guess} was ${_context.message}', TextDirection.ltr);
         _context.turnResult = TurnResult.unsuccessful;
       }
     } else if (KeyboardService.isBackspace(letter)) {
       if (_context.guess.isNotEmpty) {
+        var letterToRemove = _context.guess.characters.last;
         var guess = _context.guess.substring(0, _context.guess.length - 1).padRight(rowLength);
-        var buffer = guess.split('').map((l) => Letter(0, l, GameColor.unset));
+        var buffer = guess.split('').map((l) => Letter(value: l));
         updateBoard(buffer.toList());
         _context.guess = guess.replaceAll(' ', '');
         _context.currentIndex -= 1;
+        SemanticsService.announce('$letterToRemove removed', TextDirection.ltr);
       }
     } else {
       if (_context.guess.length < rowLength) {
         _context.guess = _context.guess + letter;
-        _context.board.tiles[_context.currentIndex++] = Letter(0, letter, GameColor.unset);
+        _context.board.tiles[_context.currentIndex++] = Letter(value: letter);
+        SemanticsService.announce('$letter added to board', TextDirection.ltr);
       }
     }
   }
@@ -204,6 +215,9 @@ class Flutterdle {
           : remaining == 0
               ? _context.answer
               : '';
+      if (_context.message.isNotEmpty) {
+        SemanticsService.announce(_context.message, TextDirection.ltr);
+      }
       persist();
     }
   }

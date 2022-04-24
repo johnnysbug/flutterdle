@@ -2,7 +2,7 @@ import 'package:flutterdle/domain.dart';
 
 class MatchingService {
   static Iterable<Letter> _convert(String word) {
-    return word.split('').asMap().entries.map((e) => Letter(e.key, e.value, GameColor.none));
+    return word.split('').asMap().entries.map((e) => Letter(index: e.key, value: e.value, color: GameColor.none));
   }
 
   static Iterable<Letter> matches(String guess, String answer) {
@@ -11,13 +11,13 @@ class MatchingService {
 
     var greens = cg
         .where((l) => guess[l.index] == answer[l.index])
-        .map((l) => Letter(l.index, l.value, GameColor.exact));
+        .map((l) => Letter(index: l.index, value: l.value, color: GameColor.exact));
 
     var glg = cg.where((g) => !greens.any((l) => l.index == g.index));
     var alg = ca.where((a) => !greens.any((l) => l.index == a.index));
     var results = _notGreens(glg, alg, greens).toList();
     results.sort((a, b) => a.index.compareTo(b.index));
-    return results.map((l) => Letter(l.index, l.value.toUpperCase(), l.color)).toList();
+    return results.map((l) => Letter(index: l.index, value: l.value.toUpperCase(), color: l.color)).toList();
   }
 
   static Iterable<Letter> _notGreens(

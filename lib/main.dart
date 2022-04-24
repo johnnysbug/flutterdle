@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutterdle/app_theme.dart';
 import 'package:flutterdle/domain.dart';
 import 'package:flutterdle/game.dart';
@@ -88,18 +89,21 @@ class _MyHomePageState extends State<MyHomePage> {
   void _closeStats() {
     setState(() {
       _showStats = false;
+      SemanticsService.announce('Closing stats', TextDirection.ltr);
     });
   }
 
   void _closeHelp() {
     setState(() {
       _showHelp = false;
+      SemanticsService.announce('Closing help', TextDirection.ltr);
     });
   }
 
   void _closeSettings() {
     setState(() {
       _showSettings = false;
+      SemanticsService.announce('Closing settings', TextDirection.ltr);
     });
   }
 
@@ -192,9 +196,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: const EdgeInsets.only(left: 16, right: 20.0),
                         child: GestureDetector(
                           onTap: () => _openHelp(),
-                          child: const Icon(
-                            Icons.help_outline,
-                            size: 26.0,
+                          child: Semantics(
+                            label: 'tap to open Help',
+                            child: const Icon(
+                              Icons.help_outline,
+                              size: 26.0,
+                            ),
                           ),
                         )),
                     title: Text(widget.title),
@@ -204,18 +211,24 @@ class _MyHomePageState extends State<MyHomePage> {
                           padding: const EdgeInsets.only(left: 16, right: 16.0),
                           child: GestureDetector(
                             onTap: () => _openStats(),
-                            child: const Icon(
-                              Icons.leaderboard,
-                              size: 26.0,
+                            child: Semantics(
+                              label: 'tap to open Stats',
+                              child: const Icon(
+                                Icons.leaderboard,
+                                size: 26.0,
+                              ),
                             ),
                           )),
                       Padding(
                           padding: const EdgeInsets.only(right: 20.0),
                           child: GestureDetector(
                             onTap: () => _openSettings(),
-                            child: const Icon(
-                              Icons.settings,
-                              size: 26.0,
+                            child: Semantics(
+                              label: 'tap to open Settings',
+                              child: const Icon(
+                                Icons.settings,
+                                size: 26.0,
+                              ),
                             ),
                           )),
                     ],
@@ -231,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Positioned(
                                       top: 25,
                                       left: 25,
-                                      child: BoardWidget(_game.context, Flutterdle.rowLength,
+                                      child: BoardWidget(_game, Flutterdle.rowLength,
                                           _game.shakeKeys, _game.bounceKeys, _game.settings)),
                                   Positioned(
                                       top: 470,
@@ -270,18 +283,21 @@ class _MyHomePageState extends State<MyHomePage> {
   _openHelp() {
     setState(() {
       _showHelp = true;
+      SemanticsService.announce('Showing help', TextDirection.ltr);
     });
   }
 
   _openStats() {
     setState(() {
       _showStats = true;
+      SemanticsService.announce('Showing stats', TextDirection.ltr);
     });
   }
 
   _openSettings() {
     setState(() {
       _showSettings = true;
+      SemanticsService.announce('Showing settings', TextDirection.ltr);
     });
   }
 }

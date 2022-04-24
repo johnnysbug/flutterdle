@@ -32,19 +32,58 @@ class Letter {
   int index;
   String value;
   GameColor color;
+  bool isKey;
 
-  Letter(this.index, this.value, this.color);
+  static const empty = '';
+
+  Letter(
+      {this.index = 0,
+      this.value = Letter.empty,
+      this.color = GameColor.unset,
+      this.isKey = false});
+
+  String get semanticsLabel {
+    if (isKey) {
+      return value.length > 1
+          ? value == 'ENTER'
+              ? 'tap to submit guess'
+              : 'tap to remove last letter entered'
+          : '${value.toUpperCase()}. key ${_match()}. Tap to use as part of your guess';
+    }
+    return value == Letter.empty
+        ? 'Empty'
+        : color == GameColor.unset
+            ? value.toUpperCase()
+            : '${value.toUpperCase()} ${_match()}';
+  }
+
+  set semanticsLabel(String value) {}
+
+  String _match() {
+    switch (color) {
+      case GameColor.unset:
+        return isKey ? 'hasn\'t been used yet' : '';
+      case GameColor.none:
+        return 'didn\'t match';
+      case GameColor.partial:
+        return 'partially matches';
+      case GameColor.exact:
+        return 'is an exact match';
+    }
+  }
 
   Letter.fromJson(Map<String, dynamic> json)
       : index = json['index'],
         value = json['value'],
-        color = GameColor.values.byName(json['color']);
+        color = GameColor.values.byName(json['color']),
+        isKey = json['isKey'] ?? false;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['index'] = index;
     data['value'] = value;
     data['color'] = color.name;
+    data['isKey'] = isKey;
     return data;
   }
 }
@@ -101,7 +140,9 @@ class Context {
       json['keys'].forEach((row) {
         var rowKeys = <Letter>[];
         row.forEach((key) {
-          rowKeys.add(Letter.fromJson(key));
+          var letter = Letter.fromJson(key);
+          letter.isKey = true;
+          rowKeys.add(letter);
         });
         keys.add(rowKeys);
       });

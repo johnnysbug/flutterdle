@@ -16,9 +16,9 @@ class TileBuilder {
     }
   }
 
-  static Widget build(String letter, GameColor color, Settings settings) {
+  static Widget build(Letter letter, Settings settings) {
     return Padding(
-      key: ValueKey(color == GameColor.unset),
+      key: ValueKey(letter.color == GameColor.unset),
       padding: const EdgeInsets.all(2.0),
       child: AspectRatio(
         aspectRatio: 1,
@@ -29,16 +29,22 @@ class TileBuilder {
                 color: Colors.grey.shade800,
               ),
               borderRadius: const BorderRadius.all(Radius.circular(8)),
-              color: _toColor(color, settings)),
+              color: _toColor(letter.color, settings)),
           child: FittedBox(
               fit: BoxFit.contain,
-              child: Text(
-                letter,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: (color != GameColor.unset) ? Colors.white : null,
-                  fontWeight: FontWeight.bold
+              child: Semantics(
+                label: letter.semanticsLabel,
+                child: ExcludeSemantics(
+                  excluding: true,
+                  child: Text(
+                    letter.value,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: (letter.color != GameColor.unset) ? Colors.white : null,
+                      fontWeight: FontWeight.bold
+                      ),
                   ),
+                ),
               )),
         ),
       ),

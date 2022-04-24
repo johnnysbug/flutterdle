@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutterdle/domain.dart';
+import 'package:flutterdle/game.dart';
 import 'package:flutterdle/helpers/tile_builder.dart';
 
 class BoardWidget extends StatelessWidget {
@@ -10,17 +11,17 @@ class BoardWidget extends StatelessWidget {
   final List<GlobalKey<AnimatorWidgetState>> _bounceKeys;
   final Settings _settings;
 
-  final Context _context;
+  final Flutterdle _game;
   final int _rowLength;
 
   const BoardWidget(
-      this._context, this._rowLength, this._shakeKeys, this._bounceKeys, this._settings,
+      this._game, this._rowLength, this._shakeKeys, this._bounceKeys, this._settings,
       {Key? key})
       : super(key: key);
 
   List<Widget> _buildRows() {
     final rows = <Widget>[];
-    var tiles = _context.board.tiles;
+    var tiles = _game.context.board.tiles;
 
     var i = 0;
     for (var x = 0; x < tiles.length / _rowLength; x++) {
@@ -41,9 +42,12 @@ class BoardWidget extends StatelessWidget {
               magnitude: 0.7,
               duration: Duration(milliseconds: 700),
               autoPlay: AnimationPlayStates.None),
-          child: Flex(
-            children: cells,
-            direction: Axis.horizontal,
+          child: Semantics(
+            label: "Row ${x + 1}",
+            child: Flex(
+              children: cells,
+              direction: Axis.horizontal,
+            ),
           )));
     }
     return rows;
@@ -55,7 +59,7 @@ class BoardWidget extends StatelessWidget {
       transitionBuilder: _transitionBuilder,
       layoutBuilder: (widget, list) =>
           Stack(children: widget != null ? [widget, ...list] : [...list]),
-      child: TileBuilder.build(letter.value, letter.color, _settings),
+      child: TileBuilder.build(letter, _settings),
       switchInCurve: Curves.easeInBack,
       switchOutCurve: Curves.easeInBack.flipped,
     );
@@ -81,29 +85,32 @@ class BoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        width: 350,
-        height: 420,
-        child: Stack(alignment: Alignment.center, children: [
-          Column(children: _buildRows()),
-          if (_context.message.isNotEmpty) ...[
-            Container(
-              decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary),
-              child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text(
-                      _context.message,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSecondary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
-                    ),
-                  )),
-            )
-          ]
-        ]));
+    return Semantics(
+      label: "game board number ${_game.gameNumber}",
+      child: SizedBox(
+          width: 350,
+          height: 420,
+          child: Stack(alignment: Alignment.center, children: [
+            Column(children: _buildRows()),
+            if (_game.context.message.isNotEmpty) ...[
+              Container(
+                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary),
+                child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Text(
+                        _game.context.message,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSecondary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      ),
+                    )),
+              )
+            ]
+          ])),
+    );
   }
 }

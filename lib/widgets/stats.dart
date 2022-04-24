@@ -6,7 +6,8 @@ import 'package:flutterdle/widgets/countdown.dart';
 import 'package:share_plus/share_plus.dart';
 
 class StatsWidget extends StatefulWidget {
-  const StatsWidget(this._stats, this._settings, this._close, this._newGame, {Key? key}) : super(key: key);
+  const StatsWidget(this._stats, this._settings, this._close, this._newGame, {Key? key})
+      : super(key: key);
 
   final Stats _stats;
   final Settings _settings;
@@ -15,7 +16,7 @@ class StatsWidget extends StatefulWidget {
 
   Stats get stats => _stats;
   Settings get settings => _settings;
-  
+
   Function get close => _close;
   Function get newGame => _newGame;
 
@@ -24,7 +25,8 @@ class StatsWidget extends StatefulWidget {
 }
 
 class _StatsState extends State<StatsWidget> {
-  int _getFlex(int number, int total) => total == 0 ? 0 : (number / (number + (total - number)) * 10).ceil();
+  int _getFlex(int number, int total) =>
+      total == 0 ? 0 : (number / (number + (total - number)) * 10).ceil();
 
   Future<Stats> get _stats => Future.microtask(() => StatsService().loadStats());
 
@@ -33,8 +35,10 @@ class _StatsState extends State<StatsWidget> {
     return FutureBuilder(
         future: _stats,
         builder: (BuildContext context, AsyncSnapshot<Stats> snapshot) {
-            return Material(
-              shadowColor: Colors.black12,
+          return Material(
+            shadowColor: Colors.black12,
+            child: BlockSemantics(
+              blocking: true,
               child: FittedBox(
                   fit: BoxFit.contain,
                   child: SizedBox(
@@ -53,7 +57,11 @@ class _StatsState extends State<StatsWidget> {
                                     const Spacer(),
                                     TextButton(
                                         onPressed: () => widget.close(),
-                                        child: const Text("X", style: TextStyle(fontSize: 20)))
+                                        child: Semantics(
+                                          label: 'tap to close Stats',
+                                          child: const ExcludeSemantics(
+                                            excluding: true,
+                                            child: Text("X", style: TextStyle(fontSize: 20)))))
                                   ],
                                 ),
                                 const Center(
@@ -73,10 +81,16 @@ class _StatsState extends State<StatsWidget> {
                                         padding: const EdgeInsets.only(left: 4, right: 4),
                                         child: Column(
                                           children: [
-                                            Text(
-                                              widget.stats.played.toString(),
-                                              style: const TextStyle(
-                                                fontSize: 36,
+                                            Semantics(
+                                              label: 'Games played is ${widget.stats.played}',
+                                              child: ExcludeSemantics(
+                                                excluding: true,
+                                                child: Text(
+                                                  widget.stats.played.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 36,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                             const Text(
@@ -92,10 +106,16 @@ class _StatsState extends State<StatsWidget> {
                                         padding: const EdgeInsets.only(left: 4, right: 4),
                                         child: Column(
                                           children: [
-                                            Text(
-                                              widget.stats.percentWon.toString(),
-                                              style: const TextStyle(
-                                                fontSize: 36,
+                                            Semantics(
+                                              label: 'Win percentage is ${widget.stats.percentWon}',
+                                              child: ExcludeSemantics(
+                                                excluding: true,
+                                                child: Text(
+                                                  widget.stats.percentWon.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 36,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                             const Text(
@@ -111,10 +131,17 @@ class _StatsState extends State<StatsWidget> {
                                         padding: const EdgeInsets.only(left: 4, right: 4),
                                         child: Column(
                                           children: [
-                                            Text(
-                                              widget.stats.streak.current.toString(),
-                                              style: const TextStyle(
-                                                fontSize: 36,
+                                            Semantics(
+                                              label:
+                                                  'Current streak is ${widget.stats.streak.current}',
+                                              child: ExcludeSemantics(
+                                                excluding: true,
+                                                child: Text(
+                                                  widget.stats.streak.current.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 36,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                             Column(children: const [
@@ -140,10 +167,16 @@ class _StatsState extends State<StatsWidget> {
                                         padding: const EdgeInsets.only(left: 4, right: 4),
                                         child: Column(
                                           children: [
-                                            Text(
-                                              widget.stats.streak.max.toString(),
-                                              style: const TextStyle(
-                                                fontSize: 36,
+                                            Semantics(
+                                              label: 'Max Streak is ${widget.stats.streak.max}',
+                                              child: ExcludeSemantics(
+                                                excluding: true,
+                                                child: Text(
+                                                  widget.stats.streak.max.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 36,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                             Column(children: const [
@@ -206,38 +239,45 @@ class _StatsState extends State<StatsWidget> {
                                           width: 2,
                                           indent: 2,
                                           endIndent: 2,
-                                          thickness: 2,),
+                                          thickness: 2,
+                                        ),
                                         Expanded(
                                           child: Padding(
                                             padding: const EdgeInsets.only(right: 16, left: 16),
-                                            child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(primary: widget.settings.isHighContrast ? Colors.orange : Colors.green),
-                                              onPressed: () {
-                                                var guesses = widget.stats.lastGuess == -1
-                                                    ? 'X'
-                                                    : widget.stats.lastGuess;
-                                                Share.share(
-                                                    'Flutterdle ${widget.stats.gameNumber} $guesses/6\n${widget.stats.lastBoard}',
-                                                    subject: 'Flutterdle $guesses/6');
-                                              },
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: const [
-                                                  Text('SHARE',
-                                                      style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Colors.white,
-                                                        fontSize: 18,
-                                                      )),
-                                                  SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  Icon(
-                                                    Icons.share,
-                                                    color: Colors.white,
-                                                    size: 24.0,
-                                                  ),
-                                                ],
+                                            child: Semantics(
+                                              label: 'Share button',
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    primary: widget.settings.isHighContrast
+                                                        ? Colors.orange
+                                                        : Colors.green),
+                                                onPressed: () {
+                                                  var guesses = widget.stats.lastGuess == -1
+                                                      ? 'X'
+                                                      : widget.stats.lastGuess;
+                                                  Share.share(
+                                                      'Flutterdle ${widget.stats.gameNumber} $guesses/6\n${widget.stats.lastBoard}',
+                                                      subject: 'Flutterdle $guesses/6');
+                                                },
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: const [
+                                                    Text('SHARE',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Colors.white,
+                                                          fontSize: 18,
+                                                        )),
+                                                    SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Icon(
+                                                      Icons.share,
+                                                      color: Colors.white,
+                                                      size: 24.0,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -249,8 +289,9 @@ class _StatsState extends State<StatsWidget> {
                               ]),
                             ))
                       ]))),
-            );
-          });
+            ),
+          );
+        });
   }
 
   Widget _guessDistribution() {
@@ -272,46 +313,55 @@ class _StatsState extends State<StatsWidget> {
     return Column(children: children);
   }
 
-  Padding _statRow(int rowNumber, int completed, int total, {bool isCurrent = false}) {
-    return Padding(
-      padding: const EdgeInsets.all(3),
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 3.0),
-            child: Text(
-              rowNumber.toString(),
-              style: const TextStyle(
-                fontSize: 16,
+  Widget _statRow(int rowNumber, int completed, int total, {bool isCurrent = false}) {
+    return Semantics(
+      label: 'Row $rowNumber has won $completed times ${isCurrent ? 'and is the current win' : ''}',
+      child: Padding(
+        padding: const EdgeInsets.all(3),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 3.0),
+              child: ExcludeSemantics(
+                excluding: true,
+                child: Text(
+                  rowNumber.toString(),
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
               ),
             ),
-          ),
-          Expanded(
-            flex: _getFlex(completed, total),
-            child: Container(
-                color: isCurrent 
-                  ? widget.settings.isHighContrast 
-                    ? Colors.orange 
-                    : Colors.green 
-                  : const Color.fromARGB(255, 90, 87, 87),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 4, right: 4),
-                  child: Text(
-                    completed.toString(),
-                    textAlign: TextAlign.end,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+            Expanded(
+              flex: _getFlex(completed, total),
+              child: Container(
+                  color: isCurrent
+                      ? widget.settings.isHighContrast
+                          ? Colors.orange
+                          : Colors.green
+                      : const Color.fromARGB(255, 90, 87, 87),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4, right: 4),
+                    child: ExcludeSemantics(
+                      excluding: true,
+                      child: Text(
+                        completed.toString(),
+                        textAlign: TextAlign.end,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
-                  ),
-                )),
-          ),
-          Expanded(
-            flex: _getFlex(total - completed, total),
-            child: Container(),
-          ),
-        ],
+                  )),
+            ),
+            Expanded(
+              flex: _getFlex(total - completed, total),
+              child: Container(),
+            ),
+          ],
+        ),
       ),
     );
   }

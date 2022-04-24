@@ -8,7 +8,7 @@ class KeyboardService {
   KeyboardService._(this._keys);
 
   static Letter _toLetter(String letter) {
-    return Letter(0, letter, GameColor.unset);
+    return Letter(value: letter, isKey: true);
   }
 
   static KeyboardService init() {

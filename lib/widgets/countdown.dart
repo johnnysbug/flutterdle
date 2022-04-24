@@ -53,10 +53,16 @@ class _CountdownState extends State<CountdownWidget> {
     final hours = padDigits(_durationUntilTomorrow!.inHours.remainder(24));
     final minutes = padDigits(_durationUntilTomorrow!.inMinutes.remainder(60));
     final seconds = padDigits(_durationUntilTomorrow!.inSeconds.remainder(60));
-    return Text(
-      '$hours:$minutes:$seconds',
-      style: const TextStyle(
-        fontSize: 34,
+    return Semantics(
+      label: 'Next game available in $hours hours, $minutes minutes, and $seconds seconds',
+      child: ExcludeSemantics(
+        excluding: true,
+        child: Text(
+          '$hours:$minutes:$seconds',
+          style: const TextStyle(
+            fontSize: 34,
+          ),
+        ),
       ),
     );
   }
