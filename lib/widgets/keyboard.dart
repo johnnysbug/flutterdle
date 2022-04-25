@@ -24,24 +24,24 @@ class Keyboard extends StatelessWidget {
   Widget _buildCell(Letter letter) {
     return Semantics(
       label: letter.semanticsLabel,
-      child: SizedBox(
-        width: letter.value.length > 1 ? 60 : 40,
-        height: 58,
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1,
-                  color: Colors.grey.shade800,
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(4)),
-                color: _toColor(letter.color)),
-            child: GestureDetector(
-              onTap: () {
-                _onKeyPressed.call(letter.value);
-              },
+      child: GestureDetector(
+        onTap: () {
+          _onKeyPressed.call(letter.value);
+        },
+        child: SizedBox(
+          width: letter.value.length > 1 ? 60 : 40,
+          height: 58,
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.grey.shade800,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(4)),
+                  color: _toColor(letter.color)),
               child: ExcludeSemantics(
                 excluding: true,
                 child: Text(
