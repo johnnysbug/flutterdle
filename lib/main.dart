@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutterdle/app_theme.dart';
 import 'package:flutterdle/domain.dart';
+import 'package:flutterdle/domain.dart' as domain;
 import 'package:flutterdle/game.dart';
 import 'package:flutterdle/widgets/board.dart';
 import 'package:flutterdle/widgets/how_to.dart';
@@ -42,6 +43,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Flutterdle',
       debugShowCheckedModeBanner: false,
+      showSemanticsDebugger: true,
       theme: AppTheme.lightTheme,
       themeMode: _appTheme,
       darkTheme: AppTheme.darkTheme,
@@ -65,9 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final Flutterdle _game = Flutterdle();
   Future<bool> _initialized = Future<bool>.value(false);
 
-  bool _showStats = false;
-  bool _showHelp = false;
-  bool _showSettings = false;
+  domain.Dialog _currentDialog = domain.Dialog.none;
 
   @override
   void initState() {
@@ -83,27 +83,6 @@ class _MyHomePageState extends State<MyHomePage> {
     _initialized = _game.init().then((value) {
       widget.streamController.add(_game.settings);
       return value;
-    });
-  }
-
-  void _closeStats() {
-    setState(() {
-      _showStats = false;
-      SemanticsService.announce('Closing stats', TextDirection.ltr);
-    });
-  }
-
-  void _closeHelp() {
-    setState(() {
-      _showHelp = false;
-      SemanticsService.announce('Closing help', TextDirection.ltr);
-    });
-  }
-
-  void _closeSettings() {
-    setState(() {
-      _showSettings = false;
-      SemanticsService.announce('Closing settings', TextDirection.ltr);
     });
   }
 
@@ -172,9 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
         });
         if (_game.context.remainingTries == 0) {
           Timer(const Duration(milliseconds: 500), (() {
-            setState(() {
-              _showStats = true;
-            });
+            _setDialog(domain.Dialog.stats);
           }));
         }
       }));
@@ -195,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     leading: Padding(
                         padding: const EdgeInsets.only(left: 16, right: 20.0),
                         child: GestureDetector(
-                          onTap: () => _openHelp(),
+                          onTap: () => {_setDialog(domain.Dialog.help)},
                           child: Semantics(
                             label: 'tap to open Help',
                             child: const Icon(
@@ -210,7 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Padding(
                           padding: const EdgeInsets.only(left: 16, right: 16.0),
                           child: GestureDetector(
-                            onTap: () => _openStats(),
+                            onTap: () => {_setDialog(domain.Dialog.stats)},
                             child: Semantics(
                               label: 'tap to open Stats',
                               child: const Icon(
@@ -222,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Padding(
                           padding: const EdgeInsets.only(right: 20.0),
                           child: GestureDetector(
-                            onTap: () => _openSettings(),
+                            onTap: () => {_setDialog(domain.Dialog.settings)},
                             child: Semantics(
                               label: 'tap to open Settings',
                               child: const Icon(
@@ -249,23 +226,27 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Positioned(
                                       top: 470,
                                       left: 0,
-                                      child: Keyboard(_game.context.keys, _game.settings, _onKeyPressed)),
-                                  if (_showStats) ...[
+                                      child: Keyboard(
+                                          _game.context.keys, _game.settings, _onKeyPressed)),
+                                  if (_currentDialog == domain.Dialog.stats) ...[
                                     Positioned(
                                         top: 50,
                                         left: 0,
-                                        child: StatsWidget(_game.stats, _game.settings, _closeStats, _newGame))
+                                        child: StatsWidget(
+                                            _game.stats, _game.settings, _setDialog, _newGame))
                                   ],
-                                  if (_showSettings) ...[
+                                  if (_currentDialog == domain.Dialog.settings) ...[
                                     Positioned(
                                         top: 50,
                                         left: 0,
-                                        child: SettingsWidget(_closeSettings,
-                                            widget.streamController, _game.settings))
+                                        child: SettingsWidget(
+                                            _setDialog, widget.streamController, _game.settings))
                                   ]
                                 ])))),
                   ])),
-              if (_showHelp) ...[SafeArea(child: HowTo(_closeHelp, _game.settings))]
+              if (_currentDialog == domain.Dialog.help) ...[
+                SafeArea(child: HowTo(_setDialog, _game.settings))
+              ]
             ];
           } else {
             children = [
@@ -280,24 +261,11 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  _openHelp() {
+  _setDialog(domain.Dialog dialog, {bool show = true}) {
     setState(() {
-      _showHelp = true;
-      SemanticsService.announce('Showing help', TextDirection.ltr);
-    });
-  }
-
-  _openStats() {
-    setState(() {
-      _showStats = true;
-      SemanticsService.announce('Showing stats', TextDirection.ltr);
-    });
-  }
-
-  _openSettings() {
-    setState(() {
-      _showSettings = true;
-      SemanticsService.announce('Showing settings', TextDirection.ltr);
+      _currentDialog = show ? dialog : domain.Dialog.none;
+      SemanticsService.announce(
+          '${show ? 'Showing' : 'Closing'} ${_currentDialog.name}', TextDirection.ltr);
     });
   }
 }

@@ -5,6 +5,13 @@ enum GameColor {
   exact,
 }
 
+enum Dialog {
+  none,
+  help,
+  stats,
+  settings
+}
+
 enum TurnResult { unset, successful, unsuccessful, partial }
 
 class Settings {

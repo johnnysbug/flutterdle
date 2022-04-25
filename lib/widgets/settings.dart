@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutterdle/domain.dart';
+import 'package:flutterdle/domain.dart' as domain;
 import 'package:flutterdle/services/settings_service.dart';
 
 class SettingsWidget extends StatefulWidget {
-  final Function close;
+  final void Function(domain.Dialog, {bool show}) close;
   final StreamController streamController;
   final Settings _settings;
 
@@ -40,7 +41,7 @@ class _SettingsState extends State<SettingsWidget> {
                                 children: [
                                   const Spacer(),
                                   TextButton(
-                                      onPressed: () => widget.close(),
+                                      onPressed: () => widget.close(domain.Dialog.settings, show: false),
                                       child: Semantics(
                                         label: 'tap to close settings',
                                         child: const ExcludeSemantics(

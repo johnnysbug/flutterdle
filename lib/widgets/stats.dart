@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutterdle/domain.dart';
+import 'package:flutterdle/domain.dart' as domain;
 import 'package:flutterdle/services/stats_service.dart';
 import 'package:flutterdle/widgets/countdown.dart';
 import 'package:share_plus/share_plus.dart';
@@ -11,13 +12,13 @@ class StatsWidget extends StatefulWidget {
 
   final Stats _stats;
   final Settings _settings;
-  final Function _close;
+  final void Function(domain.Dialog, {bool show}) _close;
   final Function _newGame;
 
   Stats get stats => _stats;
   Settings get settings => _settings;
 
-  Function get close => _close;
+  Function(domain.Dialog, {bool show}) get close => _close;
   Function get newGame => _newGame;
 
   @override
@@ -56,7 +57,7 @@ class _StatsState extends State<StatsWidget> {
                                   children: [
                                     const Spacer(),
                                     TextButton(
-                                        onPressed: () => widget.close(),
+                                        onPressed: () => widget.close(domain.Dialog.stats, show: false),
                                         child: Semantics(
                                           label: 'tap to close Stats',
                                           child: const ExcludeSemantics(

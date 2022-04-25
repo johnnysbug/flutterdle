@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutterdle/domain.dart';
+import 'package:flutterdle/domain.dart' as domain;
 import 'package:flutterdle/helpers/tile_builder.dart';
 
 class HowTo extends StatelessWidget {
-  const HowTo(this._close, this._settings, {Key? key}) : super(key: key);
+  final void Function(domain.Dialog dialog, {bool show}) close;
 
-  final Function _close;
+  const HowTo(this.close, this._settings, {Key? key}) : super(key: key);
+
   final Settings _settings;
 
   @override
@@ -40,12 +42,12 @@ class HowTo extends StatelessWidget {
                               ),
                               const Spacer(),
                               TextButton(
-                                  onPressed: () => _close(),
+                                  onPressed: () => close(domain.Dialog.help, show: false),
                                   child: Semantics(
                                     label: 'tap to close help',
                                     child: const ExcludeSemantics(
-                                      excluding: true,
-                                      child: Text("X", style: TextStyle(fontSize: 20))),
+                                        excluding: true,
+                                        child: Text("X", style: TextStyle(fontSize: 20))),
                                   ))
                             ],
                           ),
@@ -111,11 +113,18 @@ class HowTo extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     direction: Axis.horizontal,
                                     children: [
-                                      Flexible(child: TileBuilder.build(Letter(value: 'W', color: GameColor.exact), _settings)),
-                                      Flexible(child: TileBuilder.build(Letter(value: 'E'), _settings)),
-                                      Flexible(child: TileBuilder.build(Letter(value: 'A'), _settings)),
-                                      Flexible(child: TileBuilder.build(Letter(value: 'R'), _settings)),
-                                      Flexible(child: TileBuilder.build(Letter(value: 'Y'), _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(
+                                              Letter(value: 'W', color: GameColor.exact),
+                                              _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(Letter(value: 'E'), _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(Letter(value: 'A'), _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(Letter(value: 'R'), _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(Letter(value: 'Y'), _settings)),
                                     ],
                                   ),
                                 ),
@@ -131,7 +140,8 @@ class HowTo extends StatelessWidget {
                                       text: 'The letter ',
                                       children: [
                                         TextSpan(
-                                            text: 'W', style: TextStyle(fontWeight: FontWeight.bold)),
+                                            text: 'W',
+                                            style: TextStyle(fontWeight: FontWeight.bold)),
                                         TextSpan(text: ' is in the word and in the correct spot.')
                                       ],
                                     ),
@@ -152,11 +162,18 @@ class HowTo extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     direction: Axis.horizontal,
                                     children: [
-                                      Flexible(child: TileBuilder.build(Letter(value: 'P'), _settings)),
-                                      Flexible(child: TileBuilder.build(Letter(value: 'I', color: GameColor.partial), _settings)),
-                                      Flexible(child: TileBuilder.build(Letter(value: 'L'), _settings)),
-                                      Flexible(child: TileBuilder.build(Letter(value: 'L'), _settings)),
-                                      Flexible(child: TileBuilder.build(Letter(value: 'S'), _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(Letter(value: 'P'), _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(
+                                              Letter(value: 'I', color: GameColor.partial),
+                                              _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(Letter(value: 'L'), _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(Letter(value: 'L'), _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(Letter(value: 'S'), _settings)),
                                     ],
                                   ),
                                 ),
@@ -172,7 +189,8 @@ class HowTo extends StatelessWidget {
                                       text: 'The letter ',
                                       children: [
                                         TextSpan(
-                                            text: 'I', style: TextStyle(fontWeight: FontWeight.bold)),
+                                            text: 'I',
+                                            style: TextStyle(fontWeight: FontWeight.bold)),
                                         TextSpan(text: ' is in the word but in the wrong spot.')
                                       ],
                                     ),
@@ -193,11 +211,18 @@ class HowTo extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     direction: Axis.horizontal,
                                     children: [
-                                      Flexible(child: TileBuilder.build(Letter(value: 'V'), _settings)),
-                                      Flexible(child: TileBuilder.build(Letter(value: 'A'), _settings)),
-                                      Flexible(child: TileBuilder.build(Letter(value: 'G'), _settings)),
-                                      Flexible(child: TileBuilder.build(Letter(value: 'U', color: GameColor.none), _settings)),
-                                      Flexible(child: TileBuilder.build(Letter(value: 'E'), _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(Letter(value: 'V'), _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(Letter(value: 'A'), _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(Letter(value: 'G'), _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(
+                                              Letter(value: 'U', color: GameColor.none),
+                                              _settings)),
+                                      Flexible(
+                                          child: TileBuilder.build(Letter(value: 'E'), _settings)),
                                     ],
                                   ),
                                 ),
@@ -213,7 +238,8 @@ class HowTo extends StatelessWidget {
                                       text: 'The letter ',
                                       children: [
                                         TextSpan(
-                                            text: 'U', style: TextStyle(fontWeight: FontWeight.bold)),
+                                            text: 'U',
+                                            style: TextStyle(fontWeight: FontWeight.bold)),
                                         TextSpan(text: ' is not in the word in any spot.')
                                       ],
                                     ),
