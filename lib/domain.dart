@@ -5,32 +5,32 @@ enum GameColor {
   exact,
 }
 
-enum Dialog {
-  none,
-  help,
-  stats,
-  settings
-}
+enum Dialog { none, help, stats, settings }
 
 enum TurnResult { unset, successful, unsuccessful, partial }
+enum KeyboardLayout { qwerty, dvorak }
 
 class Settings {
   bool isDarkMode;
   bool isHardMode;
   bool isHighContrast;
+  KeyboardLayout keyboardLayout;
 
-  Settings(this.isDarkMode, this.isHardMode, this.isHighContrast);
+  Settings(this.isDarkMode, this.isHardMode, this.isHighContrast, this.keyboardLayout);
 
   Settings.fromJson(Map<String, dynamic> json)
       : isDarkMode = json['isDarkMode'],
         isHardMode = json['isHardMode'],
-        isHighContrast = json['isHighConstrat'] ?? false;
+        isHighContrast = json['isHighConstrat'] ?? false,
+        keyboardLayout = KeyboardLayout.values.byName(json['keyboardLayout'] ?? KeyboardLayout.qwerty.name);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['isDarkMode'] = isDarkMode;
     data['isHardMode'] = isHardMode;
     data['isHighContrast'] = isHighContrast;
+    data['keyboardLayout'] = keyboardLayout.name;
+
     return data;
   }
 }
@@ -53,12 +53,12 @@ class Letter {
     if (isKey) {
       return value.length > 1
           ? value == 'ENTER'
-              ? 'tap to submit guess'
-              : 'tap to remove last letter entered'
-          : '${value.toUpperCase()}. key ${_match()}. Tap to use as part of your guess';
+              ? 'Enter.'
+              : 'Backspace.'
+          : '${value.toUpperCase()}. key ${_match()}.';
     }
     return value == Letter.empty
-        ? 'Empty'
+        ? ''
         : color == GameColor.unset
             ? value.toUpperCase()
             : '${value.toUpperCase()} ${_match()}';
@@ -69,13 +69,13 @@ class Letter {
   String _match() {
     switch (color) {
       case GameColor.unset:
-        return isKey ? 'hasn\'t been used yet' : '';
+        return isKey ? 'is unused.' : '';
       case GameColor.none:
-        return 'didn\'t match';
+        return 'is absent.';
       case GameColor.partial:
-        return 'partially matches';
+        return 'is present.';
       case GameColor.exact:
-        return 'is an exact match';
+        return 'is correct.';
     }
   }
 

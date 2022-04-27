@@ -20,6 +20,10 @@ class SettingsWidget extends StatefulWidget {
 class _SettingsState extends State<SettingsWidget> {
   @override
   Widget build(BuildContext context) {
+    var keyboardOptions = KeyboardLayout.values.map((k) => DropdownMenuItem(
+          child: Text(k.name),
+          value: k,
+        )).toList();
     return Material(
         shadowColor: Colors.black12,
         child: BlockSemantics(
@@ -41,12 +45,13 @@ class _SettingsState extends State<SettingsWidget> {
                                 children: [
                                   const Spacer(),
                                   TextButton(
-                                      onPressed: () => widget.close(domain.Dialog.settings, show: false),
+                                      onPressed: () =>
+                                          widget.close(domain.Dialog.settings, show: false),
                                       child: Semantics(
                                         label: 'tap to close settings',
                                         child: const ExcludeSemantics(
-                                          excluding: true,
-                                          child: Text('X', style: TextStyle(fontSize: 20))),
+                                            excluding: true,
+                                            child: Text('X', style: TextStyle(fontSize: 20))),
                                       ))
                                 ],
                               ),
@@ -80,13 +85,10 @@ class _SettingsState extends State<SettingsWidget> {
                                       },
                                     ),
                                     SwitchListTile(
-                                      title: const Text(
-                                        "Dark Mode",
-                                        style: TextStyle(
+                                      title: const Text("Dark Mode",
+                                          style: TextStyle(
                                             fontSize: 18,
-                                          )
-                                      ),
-                                      
+                                          )),
                                       value: widget._settings.isDarkMode,
                                       onChanged: (bool value) {
                                         widget._settings.isDarkMode = value;
@@ -100,8 +102,7 @@ class _SettingsState extends State<SettingsWidget> {
                                       },
                                     ),
                                     SwitchListTile(
-                                      subtitle: const Text(
-                                          "For improved color vision"),
+                                      subtitle: const Text("For improved color vision"),
                                       title: const Text("High Contrast Mode",
                                           style: TextStyle(
                                             fontSize: 18,
@@ -115,6 +116,23 @@ class _SettingsState extends State<SettingsWidget> {
                                           widget._settings.isHighContrast = value;
                                         });
                                       },
+                                    ),
+                                    ListTile(
+                                      title: const Text(
+                                        'Keyboard Layout',
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                      trailing: DropdownButton(
+                                        value: widget._settings.keyboardLayout,
+                                        items: keyboardOptions,
+                                        onChanged: (KeyboardLayout? layout) {
+                                          widget.streamController.add(widget._settings);
+                                          widget._settings.keyboardLayout = layout!;
+                                          SettingsService().save(widget._settings);
+                                          setState(() {
+                                          });
+                                        },
+                                      ),
                                     ),
                                   ],
                                 ).toList()),

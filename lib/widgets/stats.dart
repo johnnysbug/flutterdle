@@ -94,10 +94,12 @@ class _StatsState extends State<StatsWidget> {
                                                 ),
                                               ),
                                             ),
-                                            const Text(
-                                              "Played",
-                                              style: TextStyle(
-                                                fontSize: 12,
+                                            const ExcludeSemantics(
+                                              child: Text(
+                                                "Played",
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                ),
                                               ),
                                             )
                                           ],
@@ -119,10 +121,12 @@ class _StatsState extends State<StatsWidget> {
                                                 ),
                                               ),
                                             ),
-                                            const Text(
-                                              "Win %",
-                                              style: TextStyle(
-                                                fontSize: 12,
+                                            const ExcludeSemantics(
+                                              child: Text(
+                                                "Win %",
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                ),
                                               ),
                                             )
                                           ],
@@ -145,22 +149,24 @@ class _StatsState extends State<StatsWidget> {
                                                 ),
                                               ),
                                             ),
-                                            Column(children: const [
-                                              Center(
-                                                  child: Text(
-                                                "Current",
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                ),
-                                              )),
-                                              Center(
-                                                  child: Text(
-                                                "Streak",
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                ),
-                                              ))
-                                            ]),
+                                            ExcludeSemantics(
+                                              child: Column(children: const [
+                                                Center(
+                                                    child: Text(
+                                                  "Current",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                )),
+                                                Center(
+                                                    child: Text(
+                                                  "Streak",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ))
+                                              ]),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -180,22 +186,24 @@ class _StatsState extends State<StatsWidget> {
                                                 ),
                                               ),
                                             ),
-                                            Column(children: const [
-                                              Center(
-                                                  child: Text(
-                                                "Max",
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                ),
-                                              )),
-                                              Center(
-                                                  child: Text(
-                                                "Streak",
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                ),
-                                              ))
-                                            ]),
+                                            ExcludeSemantics(
+                                              child: Column(children: const [
+                                                Center(
+                                                    child: Text(
+                                                  "Max",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                )),
+                                                Center(
+                                                    child: Text(
+                                                  "Streak",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ))
+                                              ]),
+                                            ),
                                           ],
                                         ),
                                       )

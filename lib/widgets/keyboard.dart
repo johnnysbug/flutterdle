@@ -24,6 +24,7 @@ class Keyboard extends StatelessWidget {
   Widget _buildCell(Letter letter) {
     return Semantics(
       label: letter.semanticsLabel,
+      keyboardKey: true,
       child: GestureDetector(
         onTap: () {
           _onKeyPressed.call(letter.value);

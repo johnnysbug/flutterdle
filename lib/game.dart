@@ -90,8 +90,8 @@ class Flutterdle {
 
   void _initContext() {
     var board = Board(List.filled(boardSize, Letter(), growable: false));
-    _context = Context(board, KeyboardService.init().keys, '', '', [], TurnResult.unset, totalTries,
-        'Good Luck!', 0, DateTime.now());
+    _context = Context(board, KeyboardService.init(keyboardLayout: _settings.keyboardLayout).keys,
+        '', '', [], TurnResult.unset, totalTries, 'Good Luck!', 0, DateTime.now());
     SemanticsService.announce(_context.message, TextDirection.ltr);
     _context.answer = _wordService.getWordOfTheDay(_baseDate);
   }
@@ -244,5 +244,23 @@ class Flutterdle {
       }
     }
     return '';
+  }
+
+  void updateKeyboardLayout() {
+    var keys = KeyboardService.init(keyboardLayout: _settings.keyboardLayout).keys;
+    for (var row in _context.keys) {
+      for (var key in row) {
+        keyLoop:
+        for (var x = 0; x < keys.length; x++) {
+          for (var y = 0; y < keys[x].length; y++) {
+            if (keys[x][y].value == key.value) {
+              keys[x][y].color = key.color;
+              break keyLoop;
+            }
+          }
+        }
+      }
+    }
+    context.keys = keys;
   }
 }

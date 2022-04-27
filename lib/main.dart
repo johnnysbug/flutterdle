@@ -77,6 +77,9 @@ class _MyHomePageState extends State<MyHomePage> {
       if (_game.settings.isDarkMode != settings.isDarkMode) {
         _game.settings.isDarkMode = settings.isDarkMode;
         _game.persist();
+      } else {
+        _game.updateKeyboardLayout();
+        _game.persist();
       }
     });
 

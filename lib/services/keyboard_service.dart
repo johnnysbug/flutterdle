@@ -11,13 +11,18 @@ class KeyboardService {
     return Letter(value: letter, isKey: true);
   }
 
-  static KeyboardService init() {
-    var keys = <List<Letter>>[
+  static KeyboardService init({ KeyboardLayout keyboardLayout = KeyboardLayout.qwerty }) {
+    return KeyboardService._(keyboardLayout == KeyboardLayout.qwerty
+    ? <List<Letter>>[
       <String>['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map((l) => _toLetter(l)).toList(),
       <String>['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'].map((l) => _toLetter(l)).toList(),
       <String>['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACK'].map((l) => _toLetter(l)).toList()
-    ];
-    return KeyboardService._(keys);
+    ]
+    : <List<Letter>>[
+      <String>['ENTER', 'P', 'Y', 'F', 'G', 'C', 'R', 'L', 'BACK'].map((l) => _toLetter(l)).toList(),
+      <String>['A', 'O', 'E', 'U', 'I', 'D', 'H', 'T', 'N', 'S'].map((l) => _toLetter(l)).toList(),
+      <String>['Q', 'J', 'K', 'X', 'B', 'M', 'W', 'V', 'Z'].map((l) => _toLetter(l)).toList()
+    ]);
   }
 
   static bool isEnter(String letter) => letter == 'ENTER';
