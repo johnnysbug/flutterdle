@@ -102,7 +102,7 @@ class Flutterdle {
   }
 
   bool didWin(List<Letter> attempt) =>
-      attempt.isNotEmpty && attempt.every((l) => l.color == GameColor.exact);
+      attempt.isNotEmpty && attempt.every((l) => l.color == GameColor.correct);
 
   String _winningMessage(int remainingTries) {
     switch (remainingTries) {
@@ -123,12 +123,12 @@ class Flutterdle {
 
   String _getTileBlock(GameColor color) {
     switch (color) {
-      case GameColor.unset:
-      case GameColor.none:
+      case GameColor.tbd:
+      case GameColor.absent:
         return '⬛️';
-      case GameColor.partial:
+      case GameColor.present:
         return _settings.isHighContrast ? '🟧' : '🟨';
-      case GameColor.exact:
+      case GameColor.correct:
         return _settings.isHighContrast ? '🟦' : '🟩';
     }
   }
@@ -235,10 +235,10 @@ class Flutterdle {
 
   String _checkHardMode() {
     var previousMatches = _context.board.tiles
-        .where((l) => l.color == GameColor.exact || l.color == GameColor.partial)
+        .where((l) => l.color == GameColor.correct || l.color == GameColor.present)
         .map((l) => l.value);
     var currentMatches = _context.attempt
-        .where((l) => l.color == GameColor.exact || l.color == GameColor.partial)
+        .where((l) => l.color == GameColor.correct || l.color == GameColor.present)
         .map((l) => l.value);
 
     if (previousMatches.isNotEmpty) {

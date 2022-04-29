@@ -115,7 +115,7 @@ class HowTo extends StatelessWidget {
                                     children: [
                                       Flexible(
                                           child: TileBuilder.build(
-                                              Letter(value: 'W', color: GameColor.exact),
+                                              Letter(value: 'W', color: GameColor.correct),
                                               _settings)),
                                       Flexible(
                                           child: TileBuilder.build(Letter(value: 'E'), _settings)),
@@ -166,7 +166,7 @@ class HowTo extends StatelessWidget {
                                           child: TileBuilder.build(Letter(value: 'P'), _settings)),
                                       Flexible(
                                           child: TileBuilder.build(
-                                              Letter(value: 'I', color: GameColor.partial),
+                                              Letter(value: 'I', color: GameColor.present),
                                               _settings)),
                                       Flexible(
                                           child: TileBuilder.build(Letter(value: 'L'), _settings)),
@@ -219,7 +219,7 @@ class HowTo extends StatelessWidget {
                                           child: TileBuilder.build(Letter(value: 'G'), _settings)),
                                       Flexible(
                                           child: TileBuilder.build(
-                                              Letter(value: 'U', color: GameColor.none),
+                                              Letter(value: 'U', color: GameColor.absent),
                                               _settings)),
                                       Flexible(
                                           child: TileBuilder.build(Letter(value: 'E'), _settings)),

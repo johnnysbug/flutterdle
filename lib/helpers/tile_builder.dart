@@ -5,20 +5,20 @@ class TileBuilder {
   
   static Color _toColor(GameColor color, Settings settings) {
     switch (color) {
-      case GameColor.exact:
+      case GameColor.correct:
         return settings.isHighContrast ? Colors.orange : Colors.green;
-      case GameColor.partial:
+      case GameColor.present:
         return settings.isHighContrast ? Colors.blue : const Color.fromARGB(255, 207, 187, 98);
-      case GameColor.none:
+      case GameColor.absent:
         return const Color.fromARGB(255, 90, 87, 87);
-      case GameColor.unset:
+      case GameColor.tbd:
         return Colors.transparent;
     }
   }
 
   static Widget build(Letter letter, Settings settings) {
     return Padding(
-      key: ValueKey(letter.color == GameColor.unset),
+      key: ValueKey(letter.color == GameColor.tbd),
       padding: const EdgeInsets.all(2.0),
       child: AspectRatio(
         aspectRatio: 1,
@@ -40,7 +40,7 @@ class TileBuilder {
                     letter.value,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: (letter.color != GameColor.unset) ? Colors.white : null,
+                      color: (letter.color != GameColor.tbd) ? Colors.white : null,
                       fontWeight: FontWeight.bold
                       ),
                   ),

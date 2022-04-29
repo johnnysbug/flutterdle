@@ -1,9 +1,4 @@
-enum GameColor {
-  unset,
-  none,
-  partial,
-  exact,
-}
+enum GameColor { tbd, absent, present, correct }
 
 enum Dialog { none, help, stats, settings }
 
@@ -22,7 +17,8 @@ class Settings {
       : isDarkMode = json['isDarkMode'],
         isHardMode = json['isHardMode'],
         isHighContrast = json['isHighConstrat'] ?? false,
-        keyboardLayout = KeyboardLayout.values.byName(json['keyboardLayout'] ?? KeyboardLayout.qwerty.name);
+        keyboardLayout =
+            KeyboardLayout.values.byName(json['keyboardLayout'] ?? KeyboardLayout.qwerty.name);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -44,10 +40,7 @@ class Letter {
   static const empty = '';
 
   Letter(
-      {this.index = 0,
-      this.value = Letter.empty,
-      this.color = GameColor.unset,
-      this.isKey = false});
+      {this.index = 0, this.value = Letter.empty, this.color = GameColor.tbd, this.isKey = false});
 
   String get semanticsLabel {
     if (isKey) {
@@ -59,30 +52,45 @@ class Letter {
     }
     return value == Letter.empty
         ? ''
-        : color == GameColor.unset
-            ? value.toUpperCase()
-            : '${value.toUpperCase()} ${_match()}';
+        : color == GameColor.tbd
+            ? '${value.toUpperCase()}.'
+            : '${value.toUpperCase()}. ${_match()}';
   }
 
   set semanticsLabel(String value) {}
 
   String _match() {
     switch (color) {
-      case GameColor.unset:
-        return isKey ? 'is unused.' : '';
-      case GameColor.none:
+      case GameColor.tbd:
+        return 'is T.B.D.';
+      case GameColor.absent:
         return 'is absent.';
-      case GameColor.partial:
+      case GameColor.present:
         return 'is present.';
-      case GameColor.exact:
+      case GameColor.correct:
         return 'is correct.';
+    }
+  }
+
+  static String upgradeEnum(String oldName) {
+    switch (oldName) {
+      case 'unset':
+        return GameColor.tbd.name;
+      case 'none':
+        return GameColor.absent.name;
+      case 'partial':
+        return GameColor.present.name;
+      case 'exact':
+        return GameColor.correct.name;
+      default:
+        return oldName;
     }
   }
 
   Letter.fromJson(Map<String, dynamic> json)
       : index = json['index'],
         value = json['value'],
-        color = GameColor.values.byName(json['color']),
+        color = GameColor.values.byName(upgradeEnum(json['color'])),
         isKey = json['isKey'] ?? false;
 
   Map<String, dynamic> toJson() {

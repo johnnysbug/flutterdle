@@ -10,13 +10,13 @@ class Keyboard extends StatelessWidget {
 
   Color _toColor(GameColor color) {
     switch (color) {
-      case GameColor.exact:
+      case GameColor.correct:
         return _settings.isHighContrast ? Colors.orange : Colors.green;
-      case GameColor.partial:
+      case GameColor.present:
         return _settings.isHighContrast ? Colors.blue : const Color.fromARGB(255, 207, 187, 98);
-      case GameColor.none:
+      case GameColor.absent:
         return const Color.fromARGB(255, 90, 87, 87);
-      case GameColor.unset:
+      case GameColor.tbd:
         return const Color.fromARGB(255, 151, 151, 151);
     }
   }
@@ -50,7 +50,7 @@ class Keyboard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: letter.value.length > 1 ? 10 : 18,
-                      color: letter.color != GameColor.unset ? Colors.white : null),
+                      color: letter.color != GameColor.tbd ? Colors.white : null),
                 ),
               ),
             ),
