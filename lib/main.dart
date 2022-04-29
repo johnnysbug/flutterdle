@@ -243,7 +243,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         top: 50,
                                         left: 0,
                                         child: SettingsWidget(
-                                            _setDialog, widget.streamController, _game.settings))
+                                                _setDialog, widget.streamController, _game.settings, _game.packageInfo))
                                   ]
                                 ])))),
                   ])),

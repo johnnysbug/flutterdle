@@ -7,7 +7,9 @@ import 'package:flutterdle/services/keyboard_service.dart';
 import 'package:flutterdle/services/matching_service.dart';
 import 'package:flutterdle/services/settings_service.dart';
 import 'package:flutterdle/services/stats_service.dart';
+import 'package:flutterdle/services/version_service.dart';
 import 'package:flutterdle/services/word_service.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class Flutterdle {
   static const boardSize = 30;
@@ -22,6 +24,7 @@ class Flutterdle {
   late Context _context;
   late Stats _stats;
   late Settings _settings;
+  late PackageInfo _packageInfo;
   late final List<GlobalKey<AnimatorWidgetState>> _shakeKeys = [];
   late final List<GlobalKey<AnimatorWidgetState>> _bounceKeys = [];
 
@@ -31,6 +34,7 @@ class Flutterdle {
 
   Stats get stats => _stats;
   Settings get settings => _settings;
+  PackageInfo get packageInfo => _packageInfo;
   int get gameNumber => DateTime.now().difference(_baseDate).inDays;
 
   void updateBoard(List<Letter> attempt) {
@@ -74,6 +78,7 @@ class Flutterdle {
     var context = await ContextService().loadContext();
     _stats = await _statsService.loadStats();
     _settings = await SettingsService().load();
+    _packageInfo = await VersionService().loadVersion();
 
     await _wordService.init();
     if (context == null) {

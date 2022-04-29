@@ -38,6 +38,7 @@ dependencies:
   tuple: ^2.0.0
   share_plus: ^4.0.2
   path_provider: ^2.0.9
+  package_info_plus: ^1.0.6
 
 dev_dependencies:
   flutter_test:

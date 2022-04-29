@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutterdle/domain.dart';
 import 'package:flutterdle/domain.dart' as domain;
 import 'package:flutterdle/services/settings_service.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsWidget extends StatefulWidget {
   final void Function(domain.Dialog, {bool show}) close;
   final StreamController streamController;
   final Settings _settings;
+  final PackageInfo _packageInfo;
 
-  const SettingsWidget(this.close, this.streamController, this._settings, {Key? key})
+  const SettingsWidget(this.close, this.streamController, this._settings, this._packageInfo, {Key? key})
       : super(key: key);
 
   @override
@@ -48,20 +50,23 @@ class _SettingsState extends State<SettingsWidget> {
                                       onPressed: () =>
                                           widget.close(domain.Dialog.settings, show: false),
                                       child: Semantics(
-                                        label: 'tap to close settings',
+                                        label: 'Close settings.',
                                         child: const ExcludeSemantics(
                                             excluding: true,
                                             child: Text('X', style: TextStyle(fontSize: 20))),
                                       ))
                                 ],
                               ),
-                              const Center(
-                                  child: Text(
-                                "SETTINGS",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                ),
-                              )),
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: 16.0),
+                                child: Center(
+                                    child: Text(
+                                  "SETTINGS",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                )),
+                              ),
                               Expanded(
                                 child: ListView(
                                     children: ListTile.divideTiles(
@@ -122,21 +127,28 @@ class _SettingsState extends State<SettingsWidget> {
                                         'Keyboard Layout',
                                         style: TextStyle(fontSize: 18),
                                       ),
-                                      trailing: DropdownButton(
-                                        value: widget._settings.keyboardLayout,
-                                        items: keyboardOptions,
-                                        onChanged: (KeyboardLayout? layout) {
-                                          widget.streamController.add(widget._settings);
-                                          widget._settings.keyboardLayout = layout!;
-                                          SettingsService().save(widget._settings);
-                                          setState(() {
-                                          });
-                                        },
+                                      trailing: Padding(
+                                        padding: const EdgeInsets.only(right: 16.0),
+                                        child: DropdownButton(
+                                          value: widget._settings.keyboardLayout,
+                                          items: keyboardOptions,
+                                          onChanged: (KeyboardLayout? layout) {
+                                            widget.streamController.add(widget._settings);
+                                            widget._settings.keyboardLayout = layout!;
+                                            SettingsService().save(widget._settings);
+                                            setState(() {
+                                            });
+                                          },
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ).toList()),
                               ),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text('Version ${widget._packageInfo.version} - Build ${widget._packageInfo.buildNumber}'),
+                              )
                             ])))
                   ]))),
         ));
