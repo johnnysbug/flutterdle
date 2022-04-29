@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Flutterdle',
       debugShowCheckedModeBanner: false,
-      showSemanticsDebugger: true,
+      showSemanticsDebugger: false,
       theme: AppTheme.lightTheme,
       themeMode: _appTheme,
       darkTheme: AppTheme.darkTheme,
