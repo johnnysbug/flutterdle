@@ -57,12 +57,13 @@ class _StatsState extends State<StatsWidget> {
                                   children: [
                                     const Spacer(),
                                     TextButton(
-                                        onPressed: () => widget.close(domain.Dialog.stats, show: false),
+                                        onPressed: () =>
+                                            widget.close(domain.Dialog.stats, show: false),
                                         child: Semantics(
-                                          label: 'tap to close Stats',
-                                          child: const ExcludeSemantics(
-                                            excluding: true,
-                                            child: Text("X", style: TextStyle(fontSize: 20)))))
+                                            label: 'tap to close Stats',
+                                            child: const ExcludeSemantics(
+                                                excluding: true,
+                                                child: Text("X", style: TextStyle(fontSize: 20)))))
                                   ],
                                 ),
                                 const Center(
@@ -324,7 +325,8 @@ class _StatsState extends State<StatsWidget> {
 
   Widget _statRow(int rowNumber, int completed, int total, {bool isCurrent = false}) {
     return Semantics(
-      label: 'Row $rowNumber has won $completed times ${isCurrent ? 'and is the current win' : ''}',
+      label:
+          'Guess $rowNumber has ${isCurrent ? 'most recently ' : ''}won $completed time${completed == 1 ? '' : 's'}',
       child: Padding(
         padding: const EdgeInsets.all(3),
         child: Row(

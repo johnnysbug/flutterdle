@@ -14,8 +14,7 @@ class BoardWidget extends StatelessWidget {
   final Flutterdle _game;
   final int _rowLength;
 
-  const BoardWidget(
-      this._game, this._rowLength, this._shakeKeys, this._bounceKeys, this._settings,
+  const BoardWidget(this._game, this._rowLength, this._shakeKeys, this._bounceKeys, this._settings,
       {Key? key})
       : super(key: key);
 
@@ -36,6 +35,8 @@ class BoardWidget extends StatelessWidget {
         ));
         i++;
       }
+      var startAt = x * Flutterdle.rowLength;
+      var endAt = startAt + (Flutterdle.rowLength - 1);
       rows.add(Shake(
           key: _shakeKeys[x],
           preferences: const AnimationPreferences(
@@ -43,7 +44,9 @@ class BoardWidget extends StatelessWidget {
               duration: Duration(milliseconds: 700),
               autoPlay: AnimationPlayStates.None),
           child: Semantics(
-            label: "Row ${x + 1}",
+            label: tiles.getRange(startAt, endAt).any((t) => t.color == GameColor.tbd)
+                ? ''
+                : _convertNumber(x + 1),
             child: Flex(
               children: cells,
               direction: Axis.horizontal,
@@ -51,6 +54,25 @@ class BoardWidget extends StatelessWidget {
           )));
     }
     return rows;
+  }
+
+  String _convertNumber(int x) {
+    switch (x) {
+      case 1:
+        return 'First guess';
+      case 2:
+        return 'Second guess';
+      case 3:
+        return 'Third guess';
+      case 4:
+        return 'Fourth guess';
+      case 5:
+        return 'Fifth guess';
+      case 6:
+        return 'Sixth guess';
+      default:
+        return 'However you got here, that is just between you and me. The guy who wrote this code. Have a great day.';
+    }
   }
 
   Widget _buildFlipAnimation(Letter letter) {
@@ -86,7 +108,7 @@ class BoardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: "game board number ${_game.gameNumber}",
+      label: "game number ${_game.gameNumber}",
       child: SizedBox(
           width: 350,
           height: 420,

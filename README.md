@@ -4,6 +4,8 @@ I wanted to challenge myself after writing a [version of Flutterdle using F#](ht
 
 You should be able to clone this repo and run it yourself, given you have setup your Flutter development environment. Here's a link to Flutter's [online documentation](https://flutter.dev/docs) for getting started.
 
+Now on the [Apple AppStore](https://apps.apple.com/us/app/flutterdle/id1619710555) and [Google Play Store](https://play.google.com/store/apps/details?id=com.johnnysbug.flutterdle)!
+
 I tried to implement the majority of features seen in the actual game(https://www.nytimes.com/games/wordle/index.html) game. Here's a list of features:
 
 - displays shake animation when a word doesn't exist in the word list or is shorter than five characters
@@ -19,6 +21,7 @@ I tried to implement the majority of features seen in the actual game(https://ww
 - shows a count down timer until next word generates on stats screen
 - includes hard mode
 - includes high constrast setting
+- includes accessibility semantics
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/1800439/160267131-11238e51-d079-4e7f-9f86-fdeddca1cfcd.gif" width="25%" />

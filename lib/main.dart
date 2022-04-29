@@ -213,40 +213,44 @@ class _MyHomePageState extends State<MyHomePage> {
                           )),
                     ],
                   ),
-                  body: Stack(children: [
-                    SizedBox.expand(
-                        child: FittedBox(
-                            fit: BoxFit.contain,
-                            child: SizedBox(
-                                width: 400,
-                                height: 670,
-                                child: Stack(children: [
-                                  Positioned(
-                                      top: 25,
-                                      left: 25,
-                                      child: BoardWidget(_game, Flutterdle.rowLength,
-                                          _game.shakeKeys, _game.bounceKeys, _game.settings)),
-                                  Positioned(
-                                      top: 470,
-                                      left: 0,
-                                      child: Keyboard(
-                                          _game.context.keys, _game.settings, _onKeyPressed)),
-                                  if (_currentDialog == domain.Dialog.stats) ...[
-                                    Positioned(
-                                        top: 50,
-                                        left: 0,
-                                        child: StatsWidget(
-                                            _game.stats, _game.settings, _setDialog, _newGame))
-                                  ],
-                                  if (_currentDialog == domain.Dialog.settings) ...[
-                                    Positioned(
-                                        top: 50,
-                                        left: 0,
-                                        child: SettingsWidget(
+                  body: LayoutBuilder(
+                    builder: (context, boxConstraints) {
+                      return Stack(children: [
+                        SizedBox.expand(
+                            child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: SizedBox(
+                                    width: 400,
+                                    height: 670,
+                                    child: Stack(children: [
+                                      Positioned(
+                                          top: 25,
+                                          left: 25,
+                                          child: BoardWidget(_game, Flutterdle.rowLength,
+                                              _game.shakeKeys, _game.bounceKeys, _game.settings)),
+                                      Positioned(
+                                          top: 470,
+                                          left: 0,
+                                          child: Keyboard(
+                                              _game.context.keys, _game.settings, _onKeyPressed)),
+                                      if (_currentDialog == domain.Dialog.stats) ...[
+                                        Positioned(
+                                            top: 50,
+                                            left: 0,
+                                            child: StatsWidget(
+                                                _game.stats, _game.settings, _setDialog, _newGame))
+                                      ],
+                                      if (_currentDialog == domain.Dialog.settings) ...[
+                                        Positioned(
+                                            top: 50,
+                                            left: 0,
+                                            child: SettingsWidget(
                                                 _setDialog, widget.streamController, _game.settings, _game.packageInfo))
-                                  ]
-                                ])))),
-                  ])),
+                                      ]
+                                    ])))),
+                      ]);
+                    }
+                  )),
               if (_currentDialog == domain.Dialog.help) ...[
                 SafeArea(child: HowTo(_setDialog, _game.settings))
               ]
