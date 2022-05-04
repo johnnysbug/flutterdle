@@ -6,7 +6,7 @@ You should be able to clone this repo and run it yourself, given you have setup 
 
 Now on the [Apple AppStore](https://apps.apple.com/us/app/flutterdle/id1619710555) and [Google Play Store](https://play.google.com/store/apps/details?id=com.johnnysbug.flutterdle)!
 
-I tried to implement the majority of features seen in the actual game(https://www.nytimes.com/games/wordle/index.html) game. Here's a list of features:
+I tried to implement the majority of features seen in the actual [game](https://www.nytimes.com/games/wordle/index.html). Here's a list of features:
 
 - displays shake animation when a word doesn't exist in the word list or is shorter than five characters
 - flips the letter tiles in a staggered manner when a guess is accepted
