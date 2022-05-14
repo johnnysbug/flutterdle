@@ -322,8 +322,8 @@ homer
 badge
 midst
 canny
-fetus
-butch
+shine
+gecko
 farce
 slung
 tipsy
@@ -381,18 +381,15 @@ lilac
 sever
 field
 fluff
-flack
 agape
 voice
 stead
-stalk
 berth
 madam
 night
 bland
 liver
 wedge
-augur
 roomy
 wacky
 flock
@@ -434,7 +431,6 @@ merit
 woven
 needy
 clown
-widow
 irony
 ruder
 gauze
@@ -2246,8 +2242,6 @@ spied
 undid
 intro
 basal
-shine
-gecko
 rodeo
 guard
 steer
@@ -2307,3 +2301,9 @@ unset
 unlit
 vomit
 fanny
+fetus
+butch
+stalk
+flack
+widow
+augur

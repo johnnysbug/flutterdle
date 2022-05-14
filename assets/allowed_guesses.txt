@@ -4858,6 +4858,7 @@ kophs
 kopje
 koppa
 korai
+koran
 koras
 korat
 kores
@@ -7291,6 +7292,7 @@ quoit
 quoll
 quonk
 quops
+quran
 qursh
 quyte
 rabat
